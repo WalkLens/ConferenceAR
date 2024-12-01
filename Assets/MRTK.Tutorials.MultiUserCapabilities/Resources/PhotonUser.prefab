@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 3000569307421430846}
   - component: {fileID: 3000569307421430845}
   - component: {fileID: 7130470341190754018}
+  - component: {fileID: 499915992462775426}
   m_Layer: 30
   m_Name: PhotonUser
   m_TagString: Untagged
@@ -98,6 +99,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   redMaterial: {fileID: 2100000, guid: db61b94b23e5fb444b86c231d13e46ef, type: 2}
   whiteMaterial: {fileID: 2100000, guid: f62f188dc6a5f55458ac47e93b3951f4, type: 2}
+--- !u!136 &499915992462775426
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3000569307421430844}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.7
+  m_Height: 0.5
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &3000569308611278184
 GameObject:
   m_ObjectHideFlags: 0
@@ -191,7 +206,7 @@ SphereCollider:
   m_GameObject: {fileID: 3000569308611278184}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
