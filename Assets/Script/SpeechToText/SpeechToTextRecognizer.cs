@@ -11,7 +11,7 @@ public class SpeechToTextRecognizer : MonoBehaviour
     private bool micPermissionGranted = false;
     ///private bool scanning = false;
 
-    private string fromLanguage = "ko-KR";
+    private string fromLanguage = "ja-JP";
 
     private SpeechToTextController speechToTextController;
 
