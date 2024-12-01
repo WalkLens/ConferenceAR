@@ -42,11 +42,14 @@ public class TranslationController : MonoBehaviour
 
         speechToTextController.onSelectRecognitionMode += HandleOnSelectRecognitionMode;
 
-        // �߰� : �Է� �� ������ �� �ֵ���
+        // 
         switch (FromLanguage)
         {
             case TranslateToLanguage.Russian:
                 fromLanguage = "ru-RU";
+                break;
+            case TranslateToLanguage.Spanish:
+                fromLanguage = "es-ES";
                 break;
             case TranslateToLanguage.German:
                 fromLanguage = "de-DE";
@@ -70,6 +73,9 @@ public class TranslationController : MonoBehaviour
             case TranslateToLanguage.Russian:
                 toLanguage = "ru-RU";
                 break;
+            case TranslateToLanguage.Spanish:
+                fromLanguage = "es-ES";
+                break;
             case TranslateToLanguage.German:
                 toLanguage = "de-DE";
                 break;
@@ -92,7 +98,7 @@ public class TranslationController : MonoBehaviour
     {
         if (recognitionMode == RecognitionMode.Tralation_Recognizer)
         {
-            recognizedString = fromLanguage + " -> " + toLanguage + "\n" + "���� ���غ�����...!";
+            recognizedString = fromLanguage + " -> " + toLanguage + "\n" + "...!";
             translatedString = "";
             BeginTranslating();
         }
@@ -220,7 +226,7 @@ public class TranslationController : MonoBehaviour
                 speechToTextController.UpdateRecognizedText(recognizedString);
                 if (translatedString != "")
                 {
-                    speechToTextController.outputText.text += "\n\n������ �ؽ�Ʈ:\n" + translatedString;
+                    speechToTextController.outputText.text += "\n\ntranslated :\n" + translatedString;
                 }
             }
         }

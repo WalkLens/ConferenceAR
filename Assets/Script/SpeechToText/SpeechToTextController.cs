@@ -5,7 +5,7 @@ using TMPro;
 
 public enum RecognitionMode { Speech_Recognizer, Intent_Recognizer, Tralation_Recognizer, Disabled, Offline };
 public enum SimuilateOfflineMode { Enabled, Disabled };
-public enum TranslateToLanguage { Russian, German, Chinese, Korean, English, Japanese }; // �߰� : Korean, Japanese
+public enum TranslateToLanguage { Russian, German, Chinese, Korean, English, Japanese, Spanish }; // �߰� : Korean, Japanese
 
 public class SpeechToTextController : MonoBehaviour
 {
