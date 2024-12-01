@@ -877,8 +877,14 @@ PlayerSettings:
   metroSplashScreenUseBackgroundColor: 0
   platformCapabilities:
     WindowsStoreApps:
+      VideosLibrary: True
       GazeInput: True
+      Chat: False
+      PhoneCall: True
+      PrivateNetworkClientServer: True
+      InternetClientServer: True
       SpatialPerception: True
+      InternetClient: True
       WebCam: True
       Microphone: True
   metroTargetDeviceFamilies: {}
