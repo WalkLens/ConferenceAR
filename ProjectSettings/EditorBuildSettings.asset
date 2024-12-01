@@ -5,9 +5,12 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Hololens2_UserMatching.unity
     guid: eee08be1bdd29dd499ff1afa4f630106
+  - enabled: 1
+    path: Assets/Scenes/MobileRegister.unity
+    guid: 450114614b44e4142a12726da8b9ac35
   m_configObjects:
     com.unity.xr.arfoundation.simulation_settings: {fileID: 11400000, guid: 233ba4fbb182dc64a9a7eccf3b2714de, type: 2}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 9078da722e2389443875c401422caa4c, type: 2}
