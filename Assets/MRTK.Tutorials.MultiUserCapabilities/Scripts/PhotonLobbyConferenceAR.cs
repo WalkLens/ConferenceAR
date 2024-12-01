@@ -122,5 +122,29 @@ namespace MRTK.Tutorials.MultiUserCapabilities
             // TODO: User Matching Manager에서 관리하는 이름으로 방 생성
             PhotonNetwork.CreateRoom("DefaultRoom", roomOptions);
         }
+
+        // 호스트 권한이 변경될 때 호출되는 콜백 메서드 (호스트가 나가서 다른 클라이언트가 호스트가 될 때)
+        public override void OnMasterClientSwitched(Player newMasterClient)
+        {
+            base.OnMasterClientSwitched(newMasterClient);
+            
+            var hostBehaviours = FindObjectsOfType<HostOnlyBehaviour>();
+            foreach (var behaviour in hostBehaviours)
+            {
+                if (behaviour.isActiveAsHost)
+                {
+                    FileLogger.Log($"[{behaviour.GetType().Name}] 호스트 권한 변경: 정리 작업 수행", this);
+                    behaviour.OnStoppedBeingHost();
+                    behaviour.isActiveAsHost = false;
+                }
+
+                if (PhotonNetwork.LocalPlayer == newMasterClient)
+                {
+                    behaviour.isActiveAsHost = true;
+                    behaviour.OnBecameHost();
+                    FileLogger.Log($"[{behaviour.GetType().Name}] 호스트 등록: 활성화됨", this);
+                }
+            }
+        }
     }
 }

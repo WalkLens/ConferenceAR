@@ -1,3 +1,4 @@
+using CustomLogger;
 public class UserConnectionManager : HostOnlyBehaviour
 {
     public override void OnBecameHost(){
