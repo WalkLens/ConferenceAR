@@ -6,7 +6,7 @@ namespace MRTK.Tutorials.MultiUserCapabilities
     public class PhotonUser : MonoBehaviour
     {
         private PhotonView pv;
-        private string username;
+        private string pinNum;
 
         private void Start()
         {
@@ -14,14 +14,34 @@ namespace MRTK.Tutorials.MultiUserCapabilities
 
             if (!pv.IsMine) return;
 
-            username = "User" + PhotonNetwork.NickName;
-            pv.RPC("PunRPC_SetNickName", RpcTarget.AllBuffered, username);
+            Vector3 position = gameObject.transform.position;
+            pinNum = PhotonLobby.Lobby.input_PIN.text;
+            //EyegazeUIManager.main.myPinNum = pinNum;
+
+            pv.RPC("PunRPC_SetNickName", RpcTarget.AllBuffered, pinNum);
+            pv.RPC("PunRPC_SetPosition", RpcTarget.AllBuffered, position);
+        }
+
+        public string GetPIN()
+        {
+            return gameObject.name;
+        }
+
+        public Vector3 GetPosition()
+        {
+            return gameObject.transform.position;
         }
 
         [PunRPC]
         private void PunRPC_SetNickName(string nName)
         {
             gameObject.name = nName;
+        }
+
+        [PunRPC]
+        private void PunRPC_SetPosition(Vector3 nPosition)
+        {
+            gameObject.transform.position = nPosition;
         }
 
         [PunRPC]
