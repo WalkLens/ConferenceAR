@@ -15,6 +15,7 @@ namespace MRTK.Tutorials.MultiUserCapabilities
         public int userIdCount;
         //Row key
         public TextMeshProUGUI input_PIN;
+        public GameObject notFoundUI;
 
         private void Awake()
         {
@@ -106,6 +107,15 @@ namespace MRTK.Tutorials.MultiUserCapabilities
         public void JoinRandomRoom()
         {
             PhotonNetwork.JoinRandomRoom();
+        }
+
+        // not finished yet
+        public void CheckPIN()
+        {
+            // if input_PIN is in DB, call the code below
+            JoinRandomRoom();
+            // else, call the code below
+            // notFoundUI.SetActive(false);
         }
 
         public void DisconnectFromPhoton()

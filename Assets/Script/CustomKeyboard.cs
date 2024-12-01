@@ -29,6 +29,6 @@ public class CustomKeyboard : MonoBehaviour
     {
         // Enter key functionality
         PhotonLobby.Lobby.input_PIN = inputField;
-        PhotonLobby.Lobby.JoinRandomRoom();
+        PhotonLobby.Lobby.CheckPIN();
     }
 }
