@@ -6,9 +6,14 @@ using MRTK.Tutorials.MultiUserCapabilities;
 public class CustomKeyboard : MonoBehaviour
 {
     public TextMeshProUGUI inputField;
+    public GameObject placeHolder;
 
     public void OnKeyPress(string character)
     {
+        if (placeHolder.activeSelf)
+        {
+            placeHolder.SetActive(false);
+        }
         inputField.text += character;
     }
 
