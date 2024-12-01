@@ -737,7 +737,7 @@ MonoBehaviour:
   ComponentScale: {x: 1, y: 1, z: 1}
   FillSize: {x: 720, y: 1033.71, z: 0}
   ShrinkSize: {x: 999999, y: 999999, z: 999999}
-  TargetPosition: {x: 0, y: -75, z: 0}
+  TargetPosition: {x: -360, y: -516.855, z: 0}
   TargetRotation: {x: -0, y: -0, z: -0, w: 1}
   TargetScale: {x: 1, y: 1, z: 1}
   TargetRectSize: {x: 720, y: 100, z: 0}
@@ -2911,7 +2911,7 @@ MonoBehaviour:
   ComponentScale: {x: 1, y: 1, z: 1}
   FillSize: {x: 720, y: 1033.71, z: 0}
   ShrinkSize: {x: 999999, y: 999999, z: 999999}
-  TargetPosition: {x: 0, y: 441.85498, z: 0}
+  TargetPosition: {x: -360, y: -516.855, z: 0}
   TargetRotation: {x: -0, y: -0, z: -0, w: 1}
   TargetScale: {x: 1, y: 1, z: 1}
   TargetRectSize: {x: 720, y: 150, z: 0}
@@ -3588,7 +3588,7 @@ MonoBehaviour:
   ComponentScale: {x: 1, y: 1, z: 1}
   FillSize: {x: 720, y: 100, z: 0}
   ShrinkSize: {x: 999999, y: 999999, z: 999999}
-  TargetPosition: {x: 0, y: -21.475006, z: 0}
+  TargetPosition: {x: -360, y: -50, z: 0}
   TargetRotation: {x: 0, y: 0, z: 0, w: 1}
   TargetScale: {x: 1, y: 1, z: 1}
   TargetRectSize: {x: 720, y: 56, z: 0}
@@ -4343,7 +4343,7 @@ MonoBehaviour:
   ComponentScale: {x: 1, y: 1, z: 1}
   FillSize: {x: 720, y: 100, z: 0}
   ShrinkSize: {x: 999999, y: 999999, z: 999999}
-  TargetPosition: {x: 0, y: -21.475006, z: 0}
+  TargetPosition: {x: -360, y: -50, z: 0}
   TargetRotation: {x: 0, y: 0, z: 0, w: 1}
   TargetScale: {x: 1, y: 1, z: 1}
   TargetRectSize: {x: 720, y: 56, z: 0}
@@ -6994,7 +6994,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 0.401
+  m_Value: 1
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -9193,7 +9193,7 @@ MonoBehaviour:
   ComponentScale: {x: 1, y: 1, z: 1}
   FillSize: {x: 720, y: 100, z: 0}
   ShrinkSize: {x: 999999, y: 999999, z: 999999}
-  TargetPosition: {x: 0, y: -21.475006, z: 0}
+  TargetPosition: {x: -360, y: -50, z: 0}
   TargetRotation: {x: -0, y: -0, z: -0, w: 1}
   TargetScale: {x: 1, y: 1, z: 1}
   TargetRectSize: {x: 720, y: 56, z: 0}
@@ -10811,7 +10811,7 @@ MonoBehaviour:
   ComponentScale: {x: 1, y: 1, z: 1}
   FillSize: {x: 720, y: 1033.71, z: 0}
   ShrinkSize: {x: 999999, y: 999999, z: 999999}
-  TargetPosition: {x: 0, y: 170.92749, z: 0}
+  TargetPosition: {x: -360, y: -516.855, z: 0}
   TargetRotation: {x: -0, y: -0, z: -0, w: 1}
   TargetScale: {x: 1, y: 1, z: 1}
   TargetRectSize: {x: 720, y: 100, z: 0}
@@ -13586,7 +13586,7 @@ MonoBehaviour:
   ComponentScale: {x: 1, y: 1, z: 1}
   FillSize: {x: 720, y: 1033.71, z: 0}
   ShrinkSize: {x: 999999, y: 999999, z: 999999}
-  TargetPosition: {x: 0, y: -320.9275, z: 0}
+  TargetPosition: {x: -360, y: -516.855, z: 0}
   TargetRotation: {x: -0, y: -0, z: -0, w: 1}
   TargetScale: {x: 1, y: 1, z: 1}
   TargetRectSize: {x: 720, y: 100, z: 0}
