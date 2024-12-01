@@ -8,7 +8,6 @@ namespace MRTK.Tutorials.MultiUserCapabilities
     public class PhotonLobbyConferenceAR : MonoBehaviourPunCallbacks
     {
         public static PhotonLobbyConferenceAR Lobby;
-
         private int roomNumber = 1;
         private int userIdCount;
 
