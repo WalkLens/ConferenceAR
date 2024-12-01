@@ -54,6 +54,7 @@ public class PinInputManager : MonoBehaviour
         {
             Debug.Log("PIN 입력 완료!");
             // 여기서 PIN 검증 로직 추가
+            UIManager.Instance.pin = pinCode;
         }
         else
         {

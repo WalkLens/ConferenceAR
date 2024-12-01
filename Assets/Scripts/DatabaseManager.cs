@@ -4,29 +4,6 @@ using UnityEngine;
 using UnityEngine.Networking;
 using System.Threading.Tasks;
 
-
-[System.Serializable]
-public class UserData
-{
-    public string pin;
-    public string name;
-    public string job;
-    public string language;
-    public string introduction_1;
-    public string introduction_2;
-    public string introduction_3;
-    public string introduction_4;
-    public string introduction_5;
-    public string interest_1;
-    public string interest_2;
-    public string interest_3;
-    public string interest_4;
-    public string interest_5;
-    public string introduction_text;
-    public string url;
-    public string photo_url;
-    public bool autoaccept;
-}
 public class DatabaseManager : MonoBehaviour
 {
     public string pin;
@@ -48,7 +25,6 @@ public class DatabaseManager : MonoBehaviour
     public string photo_url;
     public bool autoaccept;
     
-    private static DatabaseManager instance;
     public static DatabaseManager Instance { get; private set;}
     private string address;
     private Dictionary<string, string> userData;
@@ -56,9 +32,9 @@ public class DatabaseManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if(instance == null)
+        if(Instance == null)
         {
-            instance = this;
+            Instance = this;
         }
         else
         {
@@ -83,12 +59,7 @@ public class DatabaseManager : MonoBehaviour
         return false;
     }
 
-    public void TestRegisterUser()
-    {
-        RegisterProfile();
-    }
-
-    public bool RegisterProfile()
+    public bool RegisterProfile(UserData userdata)
     {
         // 요청 URL
         string apiUrl = "http://127.0.0.1:8000/users/";
