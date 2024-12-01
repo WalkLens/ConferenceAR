@@ -1,6 +1,7 @@
 using CustomLogger;
 public class UserConnectionManager : HostOnlyBehaviour
 {
+    
     public override void OnBecameHost(){
         FileLogger.Log("UserConnectionManager 초기화 시작", this);
 

@@ -4,26 +4,23 @@ using CustomLogger;
 public class HostOnlyBehaviour : MonoBehaviourPunCallbacks
 {
     public bool isActiveAsHost = false;
-    protected virtual void Awake()
+    protected virtual void Start()
     {
-        if(!PhotonNetwork.IsMasterClient)
+        HostBehaviourManager.Instance.RegisterHostBehaviour(this);
+        
+        if(!HostBehaviourManager.Instance.IsCentralHost)
         {
             isActiveAsHost = false;
-            FileLogger.Log($"[{GetType().Name}] 호스트가 아니므로 비활성화됨", this);
+            FileLogger.Log($"[{GetType().Name}] 중앙 호스트가 아니므로 비활성화됨", this);
             return;
         }
 
         isActiveAsHost = true;
-        FileLogger.Log($"[{GetType().Name}] 호스트이므로 활성화됨", this);
-        OnBecameHost(); // 1등으로 방에 들어온 호스트도 초기화 작업을 실행해야 함.
-    }
+        FileLogger.Log($"[{GetType().Name}] 중앙 호스트이므로 활성화됨", this);
+        OnBecameHost();
 
-    void Start()
-    {
         FileLogger.Log($"HostOnlyBehaviour Start - GameObject Active: {gameObject.activeInHierarchy}, Component Enabled: {enabled}", this);
     }
-    
-
 
     // 호스트가 되었을 때 실행할 가상 메서드
     public virtual void OnBecameHost(){

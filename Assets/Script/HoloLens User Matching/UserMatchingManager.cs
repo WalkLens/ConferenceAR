@@ -1,6 +1,9 @@
 using CustomLogger;
 public class UserMatchingManager : HostOnlyBehaviour
 {    
+    
+
+
     public override void OnBecameHost(){
         FileLogger.Log("UserMatchingManager 초기화 시작", this);
 
