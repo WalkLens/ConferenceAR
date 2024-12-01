@@ -3894,55 +3894,6 @@ MonoBehaviour:
         playbackMode: 0
         weightMode: 0
         transitionDuration: 0
---- !u!1 &2692411325051407966 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1747333822395303949, guid: b9384a3594655c2458d131d5ceb51b80, type: 3}
-  m_PrefabInstance: {fileID: 4423268273849124435}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &2692411325051407967
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2692411325051407966}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0250ab843fe64b2479f3f5ca1c8776cf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  SpeechServiceAPIKey: eb6bc917a59d4c2d88c6c9b1de037526
-  SpeechServiceRegion: koreacentral
-  terminal: {fileID: 2918438184016123755}
-  outputText: {fileID: 2918438182786218162}
-  buttons:
-  - {fileID: 8587298234252391867}
---- !u!114 &2692411325051407968
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2692411325051407966}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0b0c580fe6b78944f87787f319266480, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &2692411325051407969
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2692411325051407966}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0e76c565481d51845a1a979fca05b177, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  FromLanguage: 3
-  TargetLanguage: 5
 --- !u!33 &2838738015541914699
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -4337,6 +4288,10 @@ GameObject:
   - component: {fileID: 5025180753177763186}
   - component: {fileID: 8699634322393552316}
   - component: {fileID: 8699634322393552315}
+  - component: {fileID: 8699634322393552320}
+  - component: {fileID: 8699634322393552319}
+  - component: {fileID: 8699634322393552318}
+  - component: {fileID: 8699634322393552317}
   m_Layer: 5
   m_Name: SpeechToTextSampleUI
   m_TagString: Untagged
@@ -5543,6 +5498,10 @@ PrefabInstance:
     - target: {fileID: 1747333822395303949, guid: b9384a3594655c2458d131d5ceb51b80, type: 3}
       propertyPath: m_Name
       value: Speech Recognizer
+      objectReference: {fileID: 0}
+    - target: {fileID: 1747333822395303949, guid: b9384a3594655c2458d131d5ceb51b80, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3150532469186674148, guid: b9384a3594655c2458d131d5ceb51b80, type: 3}
       propertyPath: m_RootOrder
@@ -10407,6 +10366,65 @@ MonoBehaviour:
   sceneViewId: 1
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &8699634322393552317
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2918438184016123755}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66bcd5d404a816a43bcd3071b37c28ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FromLanguage: 3
+  TargetLanguage: 0
+  sharedTextUI: {fileID: 0}
+--- !u!114 &8699634322393552318
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2918438184016123755}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e76c565481d51845a1a979fca05b177, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FromLanguage: 3
+  TargetLanguage: 5
+--- !u!114 &8699634322393552319
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2918438184016123755}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b0c580fe6b78944f87787f319266480, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8699634322393552320
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2918438184016123755}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0250ab843fe64b2479f3f5ca1c8776cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SpeechServiceAPIKey: eb6bc917a59d4c2d88c6c9b1de037526
+  SpeechServiceRegion: koreacentral
+  terminal: {fileID: 2918438184016123755}
+  outputText: {fileID: 2918438182786218162}
+  buttons:
+  - {fileID: 8587298234252391867}
 --- !u!1 &8716884413312676480
 GameObject:
   m_ObjectHideFlags: 0
