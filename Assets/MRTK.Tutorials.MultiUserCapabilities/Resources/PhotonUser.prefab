@@ -12,7 +12,8 @@ GameObject:
   - component: {fileID: 3000569307421430847}
   - component: {fileID: 3000569307421430846}
   - component: {fileID: 3000569307421430845}
-  m_Layer: 0
+  - component: {fileID: 7130470341190754018}
+  m_Layer: 30
   m_Name: PhotonUser
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -83,6 +84,20 @@ MonoBehaviour:
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &7130470341190754018
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3000569307421430844}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2dfabcc68e81254283871a345d16e1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  redMaterial: {fileID: 2100000, guid: db61b94b23e5fb444b86c231d13e46ef, type: 2}
+  whiteMaterial: {fileID: 2100000, guid: f62f188dc6a5f55458ac47e93b3951f4, type: 2}
 --- !u!1 &3000569308611278184
 GameObject:
   m_ObjectHideFlags: 0
@@ -95,7 +110,7 @@ GameObject:
   - component: {fileID: 3000569308611278180}
   - component: {fileID: 3000569308611278187}
   - component: {fileID: 3000569308611278186}
-  m_Layer: 0
+  m_Layer: 30
   m_Name: Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}

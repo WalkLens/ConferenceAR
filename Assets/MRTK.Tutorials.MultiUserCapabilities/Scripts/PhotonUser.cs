@@ -16,7 +16,7 @@ namespace MRTK.Tutorials.MultiUserCapabilities
 
             Vector3 position = gameObject.transform.position;
             pinNum = PhotonLobby.Lobby.input_PIN.text;
-            //EyegazeUIManager.main.myPinNum = pinNum;
+            EyegazeUIManager.main.myPinNum = pinNum;
 
             pv.RPC("PunRPC_SetNickName", RpcTarget.AllBuffered, pinNum);
             pv.RPC("PunRPC_SetPosition", RpcTarget.AllBuffered, position);
