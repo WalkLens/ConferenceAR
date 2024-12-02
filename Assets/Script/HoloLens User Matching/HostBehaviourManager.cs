@@ -8,7 +8,10 @@ public class HostBehaviourManager : MonoBehaviourPunCallbacks
     private static HostBehaviourManager instance;
     private List<HostOnlyBehaviour> hostBehaviours = new List<HostOnlyBehaviour>();
     public static HostBehaviourManager Instance => instance;
-    public bool IsCentralHost => PhotonNetwork.IsMasterClient && PhotonNetwork.CurrentRoom.Name == "DefaultRoom";
+    public bool IsCentralHost => 
+        PhotonNetwork.IsMasterClient && 
+        PhotonNetwork.InRoom &&
+        PhotonNetwork.CurrentRoom.Name == "DefaultRoom";
 
     void Awake()
     {

@@ -4,22 +4,42 @@ using CustomLogger;
 public class HostOnlyBehaviour : MonoBehaviourPunCallbacks
 {
     public bool isActiveAsHost = false;
+    private bool isRegistered = false;
+
     protected virtual void Start()
     {
-        HostBehaviourManager.Instance.RegisterHostBehaviour(this);
-        
-        if(!HostBehaviourManager.Instance.IsCentralHost)
+        if (!isRegistered)
         {
-            isActiveAsHost = false;
-            FileLogger.Log($"[{GetType().Name}] 중앙 호스트가 아니므로 비활성화됨", this);
+            HostBehaviourManager.Instance.RegisterHostBehaviour(this);
+            isRegistered = true;
+        }
+    }
+
+    public override void OnJoinedRoom()
+    {
+        base.OnJoinedRoom();
+        CheckAndUpdateHostStatus();
+    }
+
+    private void CheckAndUpdateHostStatus()
+    {
+        if (!HostBehaviourManager.Instance.IsCentralHost)
+        {
+            if (isActiveAsHost)
+            {
+                isActiveAsHost = false;
+                OnStoppedBeingHost();
+                FileLogger.Log($"[{GetType().Name}] 중앙 호스트가 아니므로 비활성화됨", this);
+            }
             return;
         }
 
-        isActiveAsHost = true;
-        FileLogger.Log($"[{GetType().Name}] 중앙 호스트이므로 활성화됨", this);
-        OnBecameHost();
-
-        FileLogger.Log($"HostOnlyBehaviour Start - GameObject Active: {gameObject.activeInHierarchy}, Component Enabled: {enabled}", this);
+        if (!isActiveAsHost)
+        {
+            isActiveAsHost = true;
+            OnBecameHost();
+            FileLogger.Log($"[{GetType().Name}] 중앙 호스트이므로 활성화됨", this);
+        }
     }
 
     // 호스트가 되었을 때 실행할 가상 메서드
