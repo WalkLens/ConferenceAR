@@ -144,7 +144,7 @@ namespace CustomLogger{
             #endif
         }
 
-        private static string GetRoleString(){
+        public static string GetRoleString(){
             if(string.IsNullOrEmpty(PhotonNetwork.CurrentRoom?.Name))
                 return "Client";
             
