@@ -24,8 +24,12 @@ namespace CustomLogger{
                 {
                     try
                     {
-                        File.Copy(_tempLogPath, _logPath, true);
-                        File.Delete(_tempLogPath);
+                        // File.Copy(_tempLogPath, _logPath, true);
+                        string[] files = Directory.GetFiles(Application.persistentDataPath, "Conference_debug_log*");
+                        foreach (string file in files)
+                        {
+                            File.Delete(file);
+                        }
                         _isInitialized = true;
                     }
                     catch (Exception e)

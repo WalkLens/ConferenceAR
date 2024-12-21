@@ -56,6 +56,9 @@ namespace MRTK.Tutorials.MultiUserCapabilities
         public override void OnJoinedLobby()
         {            
             FileLogger.Log("로비 입장 완료", this);
+
+            // 사용자 이름 설정
+            FileLogger.SetUserName(PhotonNetwork.NickName);
             
             // 마스터 클라이언트만 방을 생성하도록 함
             if (PhotonNetwork.IsMasterClient)
