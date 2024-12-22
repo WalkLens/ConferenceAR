@@ -54,6 +54,7 @@ public class HostBehaviourManager : MonoBehaviourPunCallbacks
             {
                 behaviour.isActiveAsHost = true;
                 behaviour.OnBecameHost();
+                PhotonNetwork.NickName = "CentralHost";
             }
         }
     }
