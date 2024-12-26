@@ -16,20 +16,24 @@ public class HostBehaviourManager : MonoBehaviourPunCallbacks
         {
             if (PhotonNetwork.IsMasterClient &&
                 PhotonNetwork.InRoom &&
-                PhotonNetwork.CurrentRoom.Name == "DefaultRoom")
+                PhotonNetwork.CurrentRoom.Name == "DefaultRoom" &&
+                PhotonNetwork.NickName != "CentralHost"
+                )
             {
-                // PhotonNetwork.NickName = "CentralHost";
+                PhotonNetwork.NickName = "CentralHost";
+                foreach (var hostBehaviour in hostBehaviours)
+                {
+                    if(hostBehaviour.TryGetComponent(out UserMatchingManager hb))
+                        hb.SyncNickName(PhotonNetwork.NickName);
+                }
                 return true;
             }
+            else if (PhotonNetwork.NickName == "CentralHost")
+                return true;
             else
                 return false;
         }
     }
-
-    public bool IsdCentralHost =>
-        PhotonNetwork.IsMasterClient &&
-        PhotonNetwork.InRoom &&
-        PhotonNetwork.CurrentRoom.Name == "DefaultRoom";
 
     void Awake()
     {

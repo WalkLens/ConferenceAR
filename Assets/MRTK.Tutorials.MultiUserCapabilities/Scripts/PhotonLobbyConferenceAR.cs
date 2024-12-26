@@ -85,6 +85,12 @@ namespace MRTK.Tutorials.MultiUserCapabilities
             FileLogger.Log("Other players in room: " + PhotonNetwork.CountOfPlayersInRooms, this);
             FileLogger.Log("Total players in room: " + (PhotonNetwork.CountOfPlayersInRooms + 1), this);
             
+            string newNickName = "Player_" + PhotonNetwork.LocalPlayer.ActorNumber;
+            foreach (var hostBehaviour in HostBehaviourManager.Instance.hostBehaviours)
+            {
+                if(hostBehaviour.TryGetComponent(out UserMatchingManager hb))
+                    hb.UpdateNickNameAfterJoin(newNickName);
+            }
         }
         public override void OnJoinRoomFailed(short returnCode, string message)
         {
