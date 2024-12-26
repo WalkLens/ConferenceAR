@@ -1,3 +1,4 @@
+using System;
 using CustomLogger;
 using System.Collections.Generic;
 using Photon.Pun;
@@ -8,7 +9,7 @@ using UnityEngine;
 public class UserMatchingManager : HostOnlyBehaviour
 {    
     public UserInfo myUserInfo;        // 나의 정보
-    private List<UserInfo> userInfos = new List<UserInfo>();   // 모든 유저 정보 리스트
+    public List<UserInfo> userInfos = new List<UserInfo>();   // 모든 유저 정보 리스트
 
     public const byte SendUserInfoEvent = 2; // 유저 정보 전송 이벤트 코드
 
@@ -21,17 +22,19 @@ public class UserMatchingManager : HostOnlyBehaviour
     }
 
     public void HandleUserInfoEvent(EventData photonEvent) { // 메서드 이름 변경
+        FileLogger.Log($"photon event {photonEvent.Code} received", this);
         if (photonEvent.Code == SendUserInfoEvent) {
             object[] data = (object[])photonEvent.CustomData;
             UserInfo receivedUserInfo = (UserInfo)data[0];
 
             // 수신한 UserInfo를 리스트에 추가
             userInfos.Add(receivedUserInfo);
-            Debug.Log($"UserInfo received for {receivedUserInfo.photonUserName}");
+            FileLogger.Log($"UserInfo received for {receivedUserInfo.photonUserName}", this);
         }
     }
 
-    public override void OnJoinedRoom(){
+    public override void HandleOnJoinedRoom()
+    {
         // 사용자가 방에 접속할 때 myUserInfo 초기화
         FileLogger.Log("UserMatchingManager 사용자 접속, 정보 입력", this);
         
@@ -39,9 +42,10 @@ public class UserMatchingManager : HostOnlyBehaviour
             currentRoomNumber = PhotonNetwork.CurrentRoom.Name,
             photonRole = FileLogger.GetRoleString(),
             photonUserName = PhotonNetwork.NickName,
-            currentState = MatchingState.None
+            currentState = "None"
         };        
         userInfos.Add(myUserInfo);        
+        FileLogger.Log($"{myUserInfo.photonUserName}: {myUserInfo.photonRole}", this);
 
         // 중앙 호스트에게 User Info 전송
         if(!FileLogger.GetRoleString().Equals("CentralHost")){
@@ -50,6 +54,13 @@ public class UserMatchingManager : HostOnlyBehaviour
             if(centralHostActorNumber != -1)
                 SendUserInfo(myUserInfo, centralHostActorNumber);
         }
+        else
+        {
+            FileLogger.Log($"UserMatchingManager GetCentralHostActorNumber {-1}", this);
+        }
+        
+        FileLogger.Log("UserMatchingManager 사용자 접속 처리 완료, 정보 입력", this);
+        base.HandleOnJoinedRoom();
     }
     
     public override void OnBecameHost(){
@@ -70,8 +81,15 @@ public class UserMatchingManager : HostOnlyBehaviour
         FileLogger.Log("UserMatchingManager 잉여 데이터 정리 완료", this);
 
         base.OnStoppedBeingHost();
-    }    
+    }
 
+    private void LogCurrentPlayersInfo()
+    {
+        foreach (var player in PhotonNetwork.PlayerList)
+        {
+            FileLogger.Log($"{myUserInfo.photonUserName}: {myUserInfo.photonRole}", this);
+        } 
+    }
     private int GetCentralHostActorNumber() {
     // 모든 플레이어를 순회하여 중앙 호스트의 ActorNumber를 반환
         foreach (var player in PhotonNetwork.PlayerList) {
@@ -83,6 +101,7 @@ public class UserMatchingManager : HostOnlyBehaviour
     return -1; // 중앙 호스트가 아닐 경우
     }
     public void SendUserInfo(UserInfo userInfo, int targetActorNumber) {
+        FileLogger.Log($"Send User Info to {targetActorNumber}", this);
         // UserInfo를 포함한 데이터 생성
         object[] data = new object[] { userInfo };
 
@@ -95,16 +114,10 @@ public class UserMatchingManager : HostOnlyBehaviour
     }
 }
 
+[Serializable]
 public class UserInfo{
     public string currentRoomNumber {get;set;}
     public string photonRole {get;set;}
     public string photonUserName {get;set;}
-    public MatchingState currentState {get;set;}
-}
-
-public enum MatchingState{
-    None,
-    Waiting,
-    InMathcing,
-    Finished
+    public string currentState {get;set;}
 }

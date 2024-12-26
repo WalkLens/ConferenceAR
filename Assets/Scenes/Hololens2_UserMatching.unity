@@ -229,7 +229,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1978385255}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &46531742
 MonoBehaviour:
@@ -1079,7 +1079,7 @@ GameObject:
   - component: {fileID: 338948849}
   - component: {fileID: 338948850}
   m_Layer: 0
-  m_Name: HostBehaviour
+  m_Name: HostBehaviourManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1112,6 +1112,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf1d0ee24687d8144a66a5cbbb316f12, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hostBehaviours: []
 --- !u!1001 &402239114
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3834,7 +3835,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1978385255}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1576413345
 MonoBehaviour:
@@ -4684,8 +4685,8 @@ Transform:
   m_Children:
   - {fileID: 1300723436}
   - {fileID: 1454546453}
-  - {fileID: 1576413344}
   - {fileID: 46531741}
+  - {fileID: 1576413344}
   - {fileID: 338948849}
   m_Father: {fileID: 0}
   m_RootOrder: 3

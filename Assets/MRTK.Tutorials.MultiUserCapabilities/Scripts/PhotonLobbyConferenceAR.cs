@@ -48,7 +48,7 @@ namespace MRTK.Tutorials.MultiUserCapabilities
             // 먼저 로비에 입장
             TypedLobby conferenceLobby = new TypedLobby("Conference", LobbyType.Default);
             PhotonNetwork.JoinLobby(conferenceLobby);   
-            
+                   
 
             FileLogger.Log($"마스터 서버 {conferenceLobby.Name} 연결 완료, 로비 입장 시도", this);            
         }
