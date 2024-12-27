@@ -23,8 +23,14 @@ public class HostBehaviourManager : MonoBehaviourPunCallbacks
                 PhotonNetwork.NickName = "CentralHost";
                 foreach (var hostBehaviour in hostBehaviours)
                 {
-                    if(hostBehaviour.TryGetComponent(out UserMatchingManager hb))
-                        hb.SyncNickName(PhotonNetwork.NickName);
+                    // 최초 1회 Central Host로 변경 시에만 호출(반복 호출 방지)
+                    if (hostBehaviour.TryGetComponent(out UserMatchingManager hb))
+                    {
+                        FileLogger.Log($"hostBehaviour: {hb}");
+                        hb.UpdateNickNameAfterJoin(PhotonNetwork.NickName);
+                        hb.myUserInfo.photonUserName = PhotonNetwork.NickName;
+                        hb.userInfos.Add(hb.myUserInfo);
+                    }
                 }
                 return true;
             }
@@ -49,6 +55,7 @@ public class HostBehaviourManager : MonoBehaviourPunCallbacks
     }
 
     #region DEBUG
+    [ContextMenu("Log All Users Info")]
     public void LogAllUsersInfo(ref List<UserInfo> allUsersInfo)
     {
         foreach (UserInfo userInfo in allUsersInfo)

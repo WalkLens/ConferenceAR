@@ -72,10 +72,9 @@ public class UserMatchingManager : HostOnlyBehaviour
             photonUserName = PhotonNetwork.NickName,
             currentState = "None"
         };        
-        userInfos.Add(myUserInfo);        
         FileLogger.Log($"{myUserInfo.photonUserName}: {myUserInfo.photonRole}", this);
         
-        FileLogger.Log("UserMatchingManager 사용자 접속 처리 완료, 정보 입력", this);
+        FileLogger.Log("UserMatchingManager 사용자 접속 초기 정보 생성 완료", this);
         base.HandleOnJoinedRoom();
     }
     
@@ -178,11 +177,5 @@ public class UserMatchingManager : HostOnlyBehaviour
         {
             FileLogger.Log("닉네임을 변경하려면 방에 입장해야 합니다.", this);
         }
-    }
-    public void SyncNickName(string nickName)
-    {
-        object[] content = new object[] { PhotonNetwork.LocalPlayer.ActorNumber, nickName };
-        RaiseEventOptions options = new RaiseEventOptions { Receivers = ReceiverGroup.All };
-        PhotonNetwork.RaiseEvent(1, content, options, SendOptions.SendReliable);
     }
 }
