@@ -88,8 +88,11 @@ namespace MRTK.Tutorials.MultiUserCapabilities
             string newNickName = "Player_" + PhotonNetwork.LocalPlayer.ActorNumber;
             foreach (var hostBehaviour in HostBehaviourManager.Instance.hostBehaviours)
             {
-                if(hostBehaviour.TryGetComponent(out UserMatchingManager hb))
+                if (hostBehaviour.TryGetComponent(out UserMatchingManager hb))
+                {
                     hb.UpdateNickNameAfterJoin(newNickName);
+                    hb.TrySendingUserInfo();
+                }
             }
         }
         public override void OnJoinRoomFailed(short returnCode, string message)

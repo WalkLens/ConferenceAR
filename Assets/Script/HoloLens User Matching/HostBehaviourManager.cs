@@ -48,12 +48,15 @@ public class HostBehaviourManager : MonoBehaviourPunCallbacks
         }
     }
 
-    /*public override void OnJoinedRoom()
+    #region DEBUG
+    public void LogAllUsersInfo(ref List<UserInfo> allUsersInfo)
     {
-        base.OnJoinedRoom();
-
-
-    }*/
+        foreach (UserInfo userInfo in allUsersInfo)
+        {
+            FileLogger.Log($"{userInfo.currentRoomNumber} || {userInfo.photonRole} || {userInfo.photonUserName} || {userInfo.currentState}");
+        }
+    }
+    #endregion
 
     public void RegisterHostBehaviour(HostOnlyBehaviour behaviour)
     {
