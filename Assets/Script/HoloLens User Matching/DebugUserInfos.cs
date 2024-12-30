@@ -8,11 +8,18 @@ public class DebugUserInfos : MonoBehaviour
 {
     public TextMeshProUGUI myUserInfoText;
     public TextMeshProUGUI userInfosText;
-    
+
     public static DebugUserInfos Instance;
+
     private void Awake()
     {
-        if(Instance == null) Instance = this;
+        if (Instance == null) Instance = this;
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.D))
+            DebugAllUsersInfo();
     }
 
     public void DebugMyUserInfo(UserInfo userInfo)
@@ -20,23 +27,42 @@ public class DebugUserInfos : MonoBehaviour
         myUserInfoText.text = $"• Current Room Number: {userInfo.currentRoomNumber} \n" +
                               $"• Photon Role: {userInfo.photonRole} \n" +
                               $"• Photon UserName: {userInfo.photonUserName} \n" +
-                              $"• Photon State: {userInfo.currentState} \n"; 
+                              $"• Photon State: {userInfo.currentState} \n";
     }
 
     public void DebugAllUsersInfo()
     {
-        List<UserInfo> userInfos = new List<UserInfo>();
-        foreach (var hostBehaviour in HostBehaviourManager.Instance.hostBehaviours)
+        if (HostBehaviourManager.Instance.IsCentralHost)
         {
-            if (hostBehaviour.TryGetComponent(out UserMatchingManager matchingManager))
-                userInfos = matchingManager.userInfos;
-        }
+            List<UserInfo> userInfos = new List<UserInfo>();
+            foreach (var hostBehaviour in HostBehaviourManager.Instance.hostBehaviours)
+            {
+                if (hostBehaviour.TryGetComponent(out UserMatchingManager matchingManager))
+                    userInfos = matchingManager.userInfos;
+            }
 
-        userInfosText.text = ""; // 텍스트 초기화
-        foreach (var userInfo in userInfos)
-        {
-            userInfosText.text += $"Room: {userInfo.currentRoomNumber}, Role: {userInfo.photonRole}, UserName: {userInfo.photonUserName}, State: {userInfo.currentState}, \n";
+            userInfosText.text = ""; // 텍스트 초기화
+            foreach (var userInfo in userInfos)
+            {
+                userInfosText.text +=
+                    $"Room: {userInfo.currentRoomNumber}, Role: {userInfo.photonRole}, UserName: {userInfo.photonUserName}, State: {userInfo.currentState}, \n";
+            }
         }
-        
+        else
+        {
+            List<UserInfo> userInfos = new List<UserInfo>();
+            foreach (var hostBehaviour in HostBehaviourManager.Instance.hostBehaviours)
+            {
+                if (hostBehaviour.TryGetComponent(out UserMatchingManager matchingManager))
+                    userInfos = matchingManager.userInfos;
+            }
+
+            userInfosText.text = ""; // 텍스트 초기화
+            foreach (var userInfo in userInfos)
+            {
+                userInfosText.text +=
+                    $"Room: {userInfo.currentRoomNumber}, Role: {userInfo.photonRole}, UserName: {userInfo.photonUserName}, State: {userInfo.currentState}, \n";
+            }
+        }
     }
 }

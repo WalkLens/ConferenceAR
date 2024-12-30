@@ -61,6 +61,10 @@ public class UserMatchingManager : HostOnlyBehaviour
                 FileLogger.Log($"Player {actorNumber}의 닉네임이 {newNickName}(으)로 변경되었습니다.");
             }
         }
+        else if (photonEvent.Code == 254) // 포톤 유저 한 명이 접속 종료 이벤트
+        {
+            SyncUserListWithPhotonPlayers();
+        }
     }
     
     public override void HandleOnJoinedRoom()
@@ -180,4 +184,19 @@ public class UserMatchingManager : HostOnlyBehaviour
             FileLogger.Log("닉네임을 변경하려면 방에 입장해야 합니다.", this);
         }
     }
+    public void SyncUserListWithPhotonPlayers()
+    {
+        // Photon에 접속 중인 모든 유저 이름 가져오기
+        HashSet<string> connectedPlayerNames = new HashSet<string>();
+        foreach (var player in PhotonNetwork.PlayerList)
+        {
+            connectedPlayerNames.Add(player.NickName);
+        }
+
+        // userInfos 리스트에서 Photon에 존재하지 않는 유저 제거
+        userInfos.RemoveAll(user => !connectedPlayerNames.Contains(user.photonUserName));
+
+        FileLogger.Log($"UserInfos synced. Remaining users: {userInfos.Count}", this);
+    }
+
 }
