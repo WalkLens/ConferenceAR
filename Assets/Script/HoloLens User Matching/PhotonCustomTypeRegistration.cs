@@ -25,6 +25,14 @@ public class PhotonCustomTypeRegistration : MonoBehaviourPunCallbacks
             SerializeUserInfo,            // 직렬화 메서드
             DeserializeUserInfo           // 역직렬화 메서드
         );
+        
+        PhotonPeer.RegisterType(
+            typeof(List<UserInfo>),
+            (byte)'L', // 고유 식별자
+            SerializeUserInfoList,
+            DeserializeUserInfoList
+        );
+
     }
     
     // UserInfo를 직렬화하는 함수
@@ -60,4 +68,49 @@ public class PhotonCustomTypeRegistration : MonoBehaviourPunCallbacks
         }
         return userInfo;
     }
+    
+    private static byte[] SerializeUserInfoList(object customObject)
+    {
+        List<UserInfo> userInfoList = (List<UserInfo>)customObject;
+        using (MemoryStream stream = new MemoryStream())
+        {
+            using (BinaryWriter writer = new BinaryWriter(stream))
+            {
+                writer.Write(userInfoList.Count); // 리스트 크기 기록
+                foreach (var userInfo in userInfoList)
+                {
+                    writer.Write(userInfo.currentRoomNumber ?? "");
+                    writer.Write(userInfo.photonRole ?? "");
+                    writer.Write(userInfo.photonUserName ?? "");
+                    writer.Write(userInfo.currentState ?? "");
+                }
+            }
+            return stream.ToArray();
+        }
+    }
+
+    private static object DeserializeUserInfoList(byte[] data)
+    {
+        List<UserInfo> userInfoList = new List<UserInfo>();
+        using (MemoryStream stream = new MemoryStream(data))
+        {
+            using (BinaryReader reader = new BinaryReader(stream))
+            {
+                int count = reader.ReadInt32(); // 리스트 크기 읽기
+                for (int i = 0; i < count; i++)
+                {
+                    UserInfo userInfo = new UserInfo
+                    {
+                        currentRoomNumber = reader.ReadString(),
+                        photonRole = reader.ReadString(),
+                        photonUserName = reader.ReadString(),
+                        currentState = reader.ReadString()
+                    };
+                    userInfoList.Add(userInfo);
+                }
+            }
+        }
+        return userInfoList;
+    }
+
 }

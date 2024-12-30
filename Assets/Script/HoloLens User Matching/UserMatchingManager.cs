@@ -11,7 +11,9 @@ public class UserMatchingManager : HostOnlyBehaviour
     public UserInfo myUserInfo;        // 나의 정보
     public List<UserInfo> userInfos = new List<UserInfo>();   // 모든 유저 정보 리스트
 
+    public const byte RenameEvent = 1; // 유저 이름 변경 이벤트 코드
     public const byte SendUserInfoEvent = 2; // 유저 정보 전송 이벤트 코드
+    public const byte SendUsersInfoEvent = 3; // 모든 유저 정보 전송 이벤트 코드
 
     private void OnEnable() {
         PhotonNetwork.NetworkingClient.EventReceived += HandleEvent; // 이벤트 핸들러 등록
@@ -40,6 +42,7 @@ public class UserMatchingManager : HostOnlyBehaviour
                 userInfos.Add(receivedUserInfo);
                 HostBehaviourManager.Instance.LogAllUsersInfo(ref userInfos);
                 DebugUserInfos.Instance.DebugAllUsersInfo();
+                BroadcastUserInfos();
                 FileLogger.Log($"UserInfo received for {receivedUserInfo.photonUserName}", this);
             }
             catch (Exception ex)
@@ -47,7 +50,48 @@ public class UserMatchingManager : HostOnlyBehaviour
                 FileLogger.Log($"Error handling photon event: {ex.Message}", this);
             }
         }
-        else if (photonEvent.Code == 1) // 닉네임 변경 이벤트
+        else if (photonEvent.Code == SendUsersInfoEvent)
+        {
+            try
+            {
+                FileLogger.Log($"photon event {photonEvent.Code} received", this);
+
+                // 수신된 데이터를 배열로 역직렬화
+                UserInfo[] receivedUserInfoArray = (UserInfo[])photonEvent.CustomData;
+
+                // 배열을 List로 변환
+                var receivedUserInfos = new List<UserInfo>(receivedUserInfoArray);
+
+                foreach (var receivedUserInfo in receivedUserInfos)
+                {
+                    // 기존 리스트에서 해당 유저 정보 찾기
+                    var existingUserInfo = userInfos.Find(user => user.photonUserName == receivedUserInfo.photonUserName);
+
+                    if (existingUserInfo != null)
+                    {
+                        // 기존 유저 정보 업데이트
+                        existingUserInfo.currentRoomNumber = receivedUserInfo.currentRoomNumber;
+                        existingUserInfo.photonRole = receivedUserInfo.photonRole;
+                        existingUserInfo.currentState = receivedUserInfo.currentState;
+                    }
+                    else
+                    {
+                        // 새로운 유저 정보 추가
+                        userInfos.Add(receivedUserInfo);
+                        FileLogger.Log($"Added new UserInfo: {receivedUserInfo.photonUserName}", this);
+                    }
+                }
+                
+                DebugUserInfos.Instance.DebugAllUsersInfo();
+                FileLogger.Log($"UserInfo list updated successfully. Total users: {userInfos.Count}", this);
+            }
+            catch (Exception ex)
+            {
+                FileLogger.Log($"Failed to handle UserInfoList event: {ex.Message}", this);
+            }
+        }
+
+        else if (photonEvent.Code == RenameEvent) // 닉네임 변경 이벤트
         {
             object[] data = (object[])photonEvent.CustomData;
             int actorNumber = (int)data[0];
@@ -197,6 +241,29 @@ public class UserMatchingManager : HostOnlyBehaviour
         userInfos.RemoveAll(user => !connectedPlayerNames.Contains(user.photonUserName));
 
         FileLogger.Log($"UserInfos synced. Remaining users: {userInfos.Count}", this);
+    }
+    
+    public void BroadcastUserInfos()
+    {
+        FileLogger.Log("Broadcasting user info list to all clients", this);
+
+        // List<UserInfo>를 배열로 변환
+        var userInfoArray = userInfos.ToArray();
+
+        try
+        {
+            PhotonNetwork.RaiseEvent(
+                SendUsersInfoEvent,
+                userInfoArray, // 배열로 전송
+                new RaiseEventOptions { Receivers = ReceiverGroup.All }, // 모든 클라이언트에게 전송
+                SendOptions.SendReliable
+            );
+            FileLogger.Log("Successfully sent user info list to all clients", this);
+        }
+        catch (Exception ex)
+        {
+            FileLogger.Log($"Failed to send user info list: {ex.Message}", this);
+        }
     }
 
 }
