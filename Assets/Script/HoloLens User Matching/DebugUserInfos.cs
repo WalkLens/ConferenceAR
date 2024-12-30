@@ -15,7 +15,7 @@ public class DebugUserInfos : MonoBehaviour
         if(Instance == null) Instance = this;
     }
 
-    public void SetMyUserInfo(UserInfo userInfo)
+    public void DebugMyUserInfo(UserInfo userInfo)
     {
         myUserInfoText.text = $"• Current Room Number: {userInfo.currentRoomNumber} \n" +
                               $"• Photon Role: {userInfo.photonRole} \n" +
@@ -23,7 +23,7 @@ public class DebugUserInfos : MonoBehaviour
                               $"• Photon State: {userInfo.currentState} \n"; 
     }
 
-    public void SetUserInfos()
+    public void DebugAllUsersInfo()
     {
         List<UserInfo> userInfos = new List<UserInfo>();
         foreach (var hostBehaviour in HostBehaviourManager.Instance.hostBehaviours)

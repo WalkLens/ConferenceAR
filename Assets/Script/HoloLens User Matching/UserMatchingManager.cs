@@ -39,7 +39,7 @@ public class UserMatchingManager : HostOnlyBehaviour
                 UserInfo receivedUserInfo = (UserInfo)data[0];
                 userInfos.Add(receivedUserInfo);
                 HostBehaviourManager.Instance.LogAllUsersInfo(ref userInfos);
-                DebugUserInfos.Instance.SetUserInfos();
+                DebugUserInfos.Instance.DebugAllUsersInfo();
                 FileLogger.Log($"UserInfo received for {receivedUserInfo.photonUserName}", this);
             }
             catch (Exception ex)
@@ -57,7 +57,7 @@ public class UserMatchingManager : HostOnlyBehaviour
             if (player != null)
             {
                 player.NickName = newNickName; // 닉네임 업데이트
-                DebugUserInfos.Instance.SetMyUserInfo(myUserInfo);
+                DebugUserInfos.Instance.DebugMyUserInfo(myUserInfo);
                 FileLogger.Log($"Player {actorNumber}의 닉네임이 {newNickName}(으)로 변경되었습니다.");
             }
         }
