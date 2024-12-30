@@ -29,7 +29,14 @@ public class HostBehaviourManager : MonoBehaviourPunCallbacks
                         FileLogger.Log($"hostBehaviour: {hb}");
                         hb.UpdateNickNameAfterJoin(PhotonNetwork.NickName);
                         hb.myUserInfo.photonUserName = PhotonNetwork.NickName;
-                        hb.userInfos.Add(hb.myUserInfo);
+                        
+                        // myUserInfo와 동일한 photonUserName이 없고, photonRole이 존재하는 경우 추가
+                        if (!hb.userInfos.Exists(user => user.photonUserName == hb.myUserInfo.photonUserName )
+                             &&  !string.IsNullOrEmpty(hb.myUserInfo.photonRole))
+                        {
+                            hb.userInfos.Add(hb.myUserInfo);
+                            FileLogger.Log($"UserInfo added: {hb.myUserInfo.photonUserName}");
+                        }
                     }
                 }
                 return true;
