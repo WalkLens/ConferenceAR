@@ -7,23 +7,27 @@ using ExitGames.Client.Photon;
 using UnityEngine;
 
 public class UserMatchingManager : HostOnlyBehaviour
-{    
-    public UserInfo myUserInfo;        // 나의 정보
-    public List<UserInfo> userInfos = new List<UserInfo>();   // 모든 유저 정보 리스트
+{
+    public UserInfo myUserInfo; // 나의 정보
+    public List<UserInfo> userInfos = new List<UserInfo>(); // 모든 유저 정보 리스트
 
     public const byte RenameEvent = 1; // 유저 이름 변경 이벤트 코드
     public const byte SendUserInfoEvent = 2; // 유저 정보 전송 이벤트 코드
     public const byte SendUsersInfoEvent = 3; // 모든 유저 정보 전송 이벤트 코드
 
-    private void OnEnable() {
+    private void OnEnable()
+    {
         PhotonNetwork.NetworkingClient.EventReceived += HandleEvent; // 이벤트 핸들러 등록
     }
 
-    private void OnDisable() {
+    private void OnDisable()
+    {
         PhotonNetwork.NetworkingClient.EventReceived -= HandleEvent; // 이벤트 핸들러 해제
     }
 
-    public void HandleEvent(EventData photonEvent) { // 메서드 이름 변경
+    public void HandleEvent(EventData photonEvent)
+    {
+        // 메서드 이름 변경
         FileLogger.Log($"photon event {photonEvent.Code} received", this);
         if (photonEvent.Code == SendUserInfoEvent)
         {
@@ -65,7 +69,8 @@ public class UserMatchingManager : HostOnlyBehaviour
                 foreach (var receivedUserInfo in receivedUserInfos)
                 {
                     // 기존 리스트에서 해당 유저 정보 찾기
-                    var existingUserInfo = userInfos.Find(user => user.photonUserName == receivedUserInfo.photonUserName);
+                    var existingUserInfo =
+                        userInfos.Find(user => user.photonUserName == receivedUserInfo.photonUserName);
 
                     if (existingUserInfo != null)
                     {
@@ -81,7 +86,7 @@ public class UserMatchingManager : HostOnlyBehaviour
                         FileLogger.Log($"Added new UserInfo: {receivedUserInfo.photonUserName}", this);
                     }
                 }
-                
+
                 DebugUserInfos.Instance.DebugAllUsersInfo();
                 FileLogger.Log($"UserInfo list updated successfully. Total users: {userInfos.Count}", this);
             }
@@ -110,25 +115,27 @@ public class UserMatchingManager : HostOnlyBehaviour
             SyncUserListWithPhotonPlayers();
         }
     }
-    
+
     public override void HandleOnJoinedRoom()
     {
         // 사용자가 방에 접속할 때 myUserInfo 초기화
         FileLogger.Log("UserMatchingManager 사용자 접속, 정보 입력", this);
-        
-        myUserInfo = new UserInfo{
+
+        myUserInfo = new UserInfo
+        {
             currentRoomNumber = PhotonNetwork.CurrentRoom.Name,
             photonRole = FileLogger.GetRoleString(),
             photonUserName = PhotonNetwork.NickName,
             currentState = "None"
-        };        
+        };
         FileLogger.Log($"{myUserInfo.photonUserName}: {myUserInfo.photonRole}", this);
-        
+
         FileLogger.Log("UserMatchingManager 사용자 접속 초기 정보 생성 완료", this);
         base.HandleOnJoinedRoom();
     }
-    
-    public override void OnBecameHost(){
+
+    public override void OnBecameHost()
+    {
         FileLogger.Log("UserMatchingManager 초기화 시작", this);
 
         // TODO: 초기화 작업 구현
@@ -138,7 +145,8 @@ public class UserMatchingManager : HostOnlyBehaviour
         base.OnBecameHost();
     }
 
-    public override void OnStoppedBeingHost(){
+    public override void OnStoppedBeingHost()
+    {
         FileLogger.Log("UserMatchingManager 잉여 데이터 정리 시작", this);
 
         // TODO: 잉여 데이터 정리 작업 구현
@@ -153,26 +161,42 @@ public class UserMatchingManager : HostOnlyBehaviour
         foreach (var player in PhotonNetwork.PlayerList)
         {
             FileLogger.Log($"{myUserInfo.photonUserName}: {myUserInfo.photonRole}", this);
-        } 
+        }
     }
-    private int GetCentralHostActorNumber() {
-    // 모든 플레이어를 순회하여 중앙 호스트의 ActorNumber를 반환
-        foreach (var player in PhotonNetwork.PlayerList) {
+
+    private int GetCentralHostActorNumber()
+    {
+        // 모든 플레이어를 순회하여 중앙 호스트의 ActorNumber를 반환
+        foreach (var player in PhotonNetwork.PlayerList)
+        {
             FileLogger.Log($"UserMatchingManager {player.NickName}", this);
-            if (player.IsMasterClient && player.NickName == "CentralHost") {
+            if (player.IsMasterClient && player.NickName == "CentralHost")
+            {
                 return player.ActorNumber; // 중앙 호스트의 ActorNumber 반환
             }
         }
-    return -1; // 중앙 호스트가 아닐 경우
+
+        return -1; // 중앙 호스트가 아닐 경우
     }
 
+    // Player에게 메세지 보내기 위해 Actor Number 반환
+    public static int GetPlayerActorNumber(string photonUserName)
+    {
+        foreach (Player player in PhotonNetwork.PlayerList)
+        {
+            if(player.NickName == photonUserName)
+                return player.ActorNumber;
+        }
+        return -1;
+    }
     public void TrySendingUserInfo()
     {
         // 중앙 호스트에게 User Info 전송
-        if(!FileLogger.GetRoleString().Equals("CentralHost")){
+        if (!FileLogger.GetRoleString().Equals("CentralHost"))
+        {
             int centralHostActorNumber = GetCentralHostActorNumber();
             FileLogger.Log($"UserMatchingManager GetCentralHostActorNumber {centralHostActorNumber}", this);
-            if(centralHostActorNumber != -1)
+            if (centralHostActorNumber != -1)
                 SendUserInfo(myUserInfo, centralHostActorNumber);
         }
         else
@@ -180,6 +204,7 @@ public class UserMatchingManager : HostOnlyBehaviour
             FileLogger.Log($"UserMatchingManager GetCentralHostActorNumber {-1}", this);
         }
     }
+
     public void SendUserInfo(UserInfo userInfo, int targetActorNumber)
     {
         FileLogger.Log($"Send User Info to {targetActorNumber}", this);
@@ -228,6 +253,7 @@ public class UserMatchingManager : HostOnlyBehaviour
             FileLogger.Log("닉네임을 변경하려면 방에 입장해야 합니다.", this);
         }
     }
+
     public void SyncUserListWithPhotonPlayers()
     {
         // Photon에 접속 중인 모든 유저 이름 가져오기
@@ -242,7 +268,7 @@ public class UserMatchingManager : HostOnlyBehaviour
 
         FileLogger.Log($"UserInfos synced. Remaining users: {userInfos.Count}", this);
     }
-    
+
     public void BroadcastUserInfos()
     {
         FileLogger.Log("Broadcasting user info list to all clients", this);
@@ -265,5 +291,4 @@ public class UserMatchingManager : HostOnlyBehaviour
             FileLogger.Log($"Failed to send user info list: {ex.Message}", this);
         }
     }
-
 }
