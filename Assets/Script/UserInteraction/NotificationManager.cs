@@ -5,25 +5,30 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+[System.Serializable]
+public class PressableButtons
+{
+    public PressableButton acceptButton;
+    public PressableButton declineButton;
+    public PressableButton holdButton;
+}
+
 public class NotificationManager : MonoBehaviour
 {
-    [System.Serializable]
-    public class PressableButtons
-    {
-        public PressableButton acceptButton;
-        public PressableButton declineButton;
-        public PressableButton holdButton;
-    }
+    
     public PressableButtons buttons;
-    [SerializeField] GameObject MatchingUI;
-    [SerializeField] GameObject afMatchingUI;
+    [SerializeField] GameObject matchingUI;
     [SerializeField] GameObject profileUI;
+    [SerializeField] GameObject timeSetUI;
+    [SerializeField] GameObject afMatchingUI;
 
     private string processingUserId = "";
+    private int time = 0;
 
     public void ShowMatchingNotification(string fromUserId)
     {
-        MatchingUI.SetActive(true);
+        OpenMatchingUI();
+        // !!!! 프로필 UI에 데이터 띄우는 부분 구현 필요
     }
 
     public void OnMatchRequestReceived(string fromUserId)   // if someone choose me, it works
@@ -56,32 +61,98 @@ public class NotificationManager : MonoBehaviour
     public void SendAcceptMessage()
     {
         Debug.Log($"Accept User: {processingUserId}");
-        MatchingUI.SetActive(false);
-        UserMatchingManager.Instance.isUserMatchingSucceed = true;
+        UserMatchingManagerSM.Instance.isUserMatchingSucceed = true;
     }
 
     public void SendDeclineMessage()
     {
         Debug.Log($"Decline User: {processingUserId}");
-        MatchingUI.SetActive(false);
     }
 
     public void SendHoldMessage()
     {
         Debug.Log($"Hold User: {processingUserId}");
-        MatchingUI.SetActive(false);
     }
 
-    public void OpenFile()
+    /////////////// ON/OFF BUTTON Callbacks ///////////////
+    public void OpenMatchingUI()
     {
-        Debug.Log($"Open File from {processingUserId}");
+        matchingUI.SetActive(true);
+    }
+
+    public void CloseMatchingUI()
+    {
+        matchingUI.SetActive(false);
+    }
+
+    public void OpenProfileUI()
+    {
         profileUI.SetActive(true);
+        Debug.Log($"Open Profile about {processingUserId}");
+
+        // !!! 데이터베이스 데이터 가져오는 함수 작동할 것
+        //afMatchingUI.SetActive(false);
+    }
+
+    public void CloseProfileUI()
+    {
+        profileUI.SetActive(false);
+        Debug.Log($"Close Profile about {processingUserId}");
+    }
+
+    public void OpenTimeSetUI()
+    {
+        timeSetUI.SetActive(true);
+    }
+
+    public void CloseTimeSetUI()
+    {
+        timeSetUI.SetActive(false);
+    }
+
+    public void OpenAfMatchingUI()
+    {
+        afMatchingUI.SetActive(true);
+    }
+
+    public void CloseAfMatchingUI()
+    {
         afMatchingUI.SetActive(false);
     }
+    //////////////////////////////////////////////
 
-    public void CloseFile()
+
+    //////////////// TIME BUTTON Callbacks ///////////////
+    public void MeetTimePlus()
     {
-        Debug.Log($"Open File from {processingUserId}");
-        profileUI.SetActive(false);
+        time += 10;
+        Debug.Log(time);
     }
+
+    public void MeetTimeMinus()
+    {
+        if (time >= 10)
+        {
+            time -= 10;
+        }
+        Debug.Log(time);
+    }
+
+    public void MeetTimeZero()
+    {
+        time = 0;
+    }
+
+    public void MeetTimeUpdate()
+    {
+        if (time > 0)
+        {
+            // !!!! DB 업데이트
+        }
+        else
+        {
+            SendAcceptMessage();
+        }
+    }
+    //////////////////////////////////////////////
 }

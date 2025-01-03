@@ -55,7 +55,7 @@ public class InteractionUIManager : MonoBehaviour
 
     public void SelectBox()
     {
-        UserMatchingManager.Instance.isUserRibbonSelected = true;
+        UserMatchingManagerSM.Instance.isUserRibbonSelected = true;
         // Box Animation
     }
 
