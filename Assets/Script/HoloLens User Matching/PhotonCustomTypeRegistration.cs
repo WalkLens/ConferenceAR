@@ -78,7 +78,7 @@ public class PhotonCustomTypeRegistration : MonoBehaviourPunCallbacks
         }
         return matchInfo;
     }
-    // UserInfo를 직렬화하는 함수
+    // UserInfo를 직렬화하는 함수a
     private static byte[] SerializeUserInfo(object customObject)
     {
         UserInfo userInfo = (UserInfo)customObject;

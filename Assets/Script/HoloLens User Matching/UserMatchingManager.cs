@@ -153,7 +153,19 @@ public class UserMatchingManager : HostOnlyBehaviour
 
                 debugUserInfo.receivedMatchInfo = receivedMatchInfo;
                 debugUserInfo.DebugMatchText();
-                debugUserInfo.SetMatchButtonStatus(true);
+                
+                if (debugUserInfo.receivedMatchInfo.matchRequest == "Request...")   // 매칭 요청을 받음
+                {
+                    debugUserInfo.ShowMatchRequestUI(); 
+                }
+                else if (debugUserInfo.receivedMatchInfo.matchRequest == "Yes")     // 매칭 응답(Yes)을 받음
+                {
+                    debugUserInfo.ShowMatchRequestYesUI();
+                }
+                else if (debugUserInfo.receivedMatchInfo.matchRequest == "No")      // 매칭 응답(No)을 받음
+                {
+                    debugUserInfo.ShowMatchRequestNoUI();
+                }
             }
             catch (Exception ex)
             {

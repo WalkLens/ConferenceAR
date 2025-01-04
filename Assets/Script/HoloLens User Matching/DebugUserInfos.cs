@@ -76,25 +76,13 @@ public class DebugUserInfos : MonoBehaviour
 
     public void SetMatchButtonStatus(bool status)
     {
-        UserInfo myUserInfo = new UserInfo();
-        foreach (var hostBehaviour in HostBehaviourManager.Instance.hostBehaviours)
-        {
-            if (hostBehaviour.TryGetComponent(out UserMatchingManager matchingManager))
-            {
-                myUserInfo = matchingManager.myUserInfo;
-            }
-        }
-
-
         if (status)
         {
             // true이면 Match 응답 버튼과 관련된 부분에 기능 할당
-            matchButtonGameObject.SetActive(true);
-
             // 보낼 Match Info 생성 
             matchInfo = new MatchInfo
             {
-                userWhoSend = myUserInfo.photonUserName,
+                userWhoSend = UserMatchingManager.Instance.myUserInfo.photonUserName,
                 userWhoReceive = "",
                 matchRequest = ""
             };
@@ -107,7 +95,7 @@ public class DebugUserInfos : MonoBehaviour
                 matchInfo.matchRequest = "Yes";
 
                 // 실제 메서드 실행
-                SendMatchRequestToAUser(receivedMatchInfo.userWhoSend, myUserInfo);
+                SendMatchRequestToAUser(receivedMatchInfo.userWhoSend, UserMatchingManager.Instance.myUserInfo);
 
                 matchButtonGameObject.SetActive(false);
             });
@@ -116,7 +104,7 @@ public class DebugUserInfos : MonoBehaviour
                 matchInfo.matchRequest = "No";
 
                 // 실제 메서드 실행
-                SendMatchRequestToAUser(receivedMatchInfo.userWhoSend, myUserInfo);
+                SendMatchRequestToAUser(receivedMatchInfo.userWhoSend, UserMatchingManager.Instance.myUserInfo);
 
                 matchButtonGameObject.SetActive(false);
             });
@@ -246,8 +234,7 @@ public class DebugUserInfos : MonoBehaviour
 
         SetButtonTextsFromAllUsersInfo();
     }
-
-
+    
     public void LogAllUsersInfo(ref List<UserInfo> allUsersInfo)
     {
         foreach (UserInfo userInfo in allUsersInfo)
@@ -259,6 +246,22 @@ public class DebugUserInfos : MonoBehaviour
 
     #endregion
 
+    public void ShowMatchRequestUI()
+    {
+        // TODO: 매칭 요청을 받고 그에 해당하는 UI를 띄운다.
+        matchButtonGameObject.SetActive(true);
+        
+    }
+    public void ShowMatchRequestYesUI()
+    {
+        // TODO: 매칭 응답(Yes)을 받고 그에 해당하는 UI를 띄운다.
+        
+    }
+    public void ShowMatchRequestNoUI()
+    {
+        // TODO: 매칭 응답(No)을 받고 그에 해당하는 UI를 띄운다.
+        
+    }
     void OnDestroy()
     {
         foreach (var userButton in userButtons)
