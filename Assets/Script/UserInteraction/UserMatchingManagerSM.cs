@@ -12,11 +12,19 @@ public class UserMatchingManagerSM : MonoBehaviour
     public static UserMatchingManagerSM Instance { get; private set; }
 
     // Flags
-    public bool isUserMatchingSended = false;
+    public bool isUserMatchingReceived = false;
+    public bool isUserMatchingFailReceived = false;
     public bool isUserMatchingSucceed = false;
+    public bool isUserMatchingFailed = false;
     public bool isUserMet = false;
     public bool isUserRibbonSelected = false;
     public bool isUserFileSended = false;
+    public float uitimer1 = 0;
+    public float uitimer1limit = 3;
+    public float uitimer2 = 0;
+    public float uitimer2limit = 3;
+    public float requestTime = 0;
+    public float leftime = 0;
 
     // User Data
     public string imsiId = "241201";
@@ -27,6 +35,7 @@ public class UserMatchingManagerSM : MonoBehaviour
     public enum Phase
     {
         Matching,
+        ResultManaging,
         RouteVisualizing,
         AfterMatching,
     }
@@ -49,7 +58,7 @@ public class UserMatchingManagerSM : MonoBehaviour
         if (!isUserMatchingSucceed)
         {
             yield return new WaitForSeconds(5f);
-            isUserMatchingSended = true;
+            isUserMatchingReceived = true;
         }
     }
 
@@ -65,44 +74,88 @@ public class UserMatchingManagerSM : MonoBehaviour
 
     private void Start()
     {
-        StartCoroutine(SendUserMatchingRoutine());
-        StartCoroutine(SendUserFileRoutine());
+        //StartCoroutine(SendUserMatchingRoutine());
+        //StartCoroutine(SendUserFileRoutine());
     }
 
     void Update()
     {
-        // SWITCH로 변경하면 좋을 듯
+        // 첫 매칭
         switch (currentPhase)
         {
             // Phase 1. Matching - Accept가 눌렸는지 주기적으로 감시
             case Phase.Matching:
-                if (isUserMatchingSended)
+                if (isUserMatchingReceived)
                 {
                     notificationManager.OnMatchRequestReceived(imsiId);
-                    //isUserMatchingSended = false;
+                    isUserMatchingReceived = false;
                     currentPhase++;
                 }
                 break;
 
-            // Phase 2. Route Visualizing - 매칭이 완료되면 경로 시각화
+            // Phase 2. Result Managing - 매칭의 결과에 따른 UI 팝업 및 결과 전송
+            case Phase.ResultManaging:
+                // 매칭 성공 UI 팝업
+                if (isUserMatchingSucceed)
+                {
+                    if (uitimer1 < uitimer1limit)
+                    {
+                        notificationManager.OpenAcceptPopupUI();
+                        uitimer1 += Time.deltaTime;
+                    }
+                    else    // reset
+                    {
+                        notificationManager.CloseAcceptPopupUI();
+                        uitimer1 = 0;
+                        currentPhase++;
+                        leftime = notificationManager.GetTime();
+                    }
+                }
+                // 매칭 실패 UI 팝업
+                else if (isUserMatchingFailed)
+                {
+                    if (uitimer1 < uitimer1limit)
+                    {
+                        notificationManager.OpenDeclinePopupUI();
+                        uitimer1 += Time.deltaTime;
+                    }
+                    else    // reset
+                    {
+                        notificationManager.CloseDeclinePopupUI();
+                        isUserMatchingFailed = false;
+                        uitimer1 = 0;
+                        currentPhase--;
+                    }
+                }
+                break;
+
+            // Phase 3. Route Visualizing - 매칭이 완료되면 경로 시각화
             case Phase.RouteVisualizing:
-                if (isUserMatchingSucceed && !isUserMet)
+                if(leftime <= 0)
                 {
-                    interactionUIManager.ShowRoute(myPosition.position, partnerPosition.position);
-                    userBehaviourManager.CheckMetState(myPosition.position, partnerPosition.position);
+                    if (!isUserMet)
+                    {
+                        interactionUIManager.ShowRoute(myPosition.position, partnerPosition.position);
+                        userBehaviourManager.CheckMetState(myPosition.position, partnerPosition.position);
 
-                    // IMSI MOVER - 사용자가 움직이는 중이라고 임시 가정
-                    myPosition.transform.position = Vector3.MoveTowards(myPosition.position, partnerPosition.position, 1f * Time.deltaTime);
+                        // IMSI MOVER - 사용자가 움직이는 중이라고 임시 가정
+                        myPosition.transform.position = Vector3.MoveTowards(myPosition.position, partnerPosition.position, 1f * Time.deltaTime);
+                    }
+                    else
+                    {
+                        interactionUIManager.HideRoute();
+                        interactionUIManager.ShowBox();
+                        currentPhase++;
+                    }
                 }
-                else if (isUserMet)
+                else
                 {
-                    interactionUIManager.HideRoute();
-                    interactionUIManager.ShowBox();
-                    currentPhase++;
+                    leftime -= Time.deltaTime;
                 }
+                
                 break;
 
-            // Phase 3. After Matching Service On
+            // Phase 4. After Matching Service On
             case Phase.AfterMatching:
                 if (isUserRibbonSelected)       // 1) 만났을 때 리본이 선택되었는지 주기적으로 확인
                 {
@@ -113,7 +166,35 @@ public class UserMatchingManagerSM : MonoBehaviour
                     notificationManager.OnFileReceived(imsiId);
                     isUserFileSended = false;
                 }
+                if (isUserMatchingReceived)       // 3) 새로운 매칭 요청이 왔다면
+                {
+                    notificationManager.OpenNewMatchingUI();
+                }
+
                 break;
+        }
+
+        // 매칭 중 또 다른 매칭
+        // isUserMatchingSucceed는 현재 매칭이 진행 중이었다면 계속 True
+        if (isUserMatchingSucceed && isUserMatchingReceived)
+        {
+            notificationManager.OpenNewMatchingUI();
+        }
+
+        // 이전에 보낸 매칭 요청 실패
+        if (isUserMatchingFailReceived)
+        {
+            if (uitimer2 < uitimer2limit)
+            {
+                notificationManager.OpenMatchingFailUI();
+                uitimer2 += Time.deltaTime;
+            }
+            else    // reset
+            {
+                isUserMatchingFailReceived = false;
+                notificationManager.CloseMatchingFailUI();
+                uitimer2 = 0;
+            }
         }
     }
 }

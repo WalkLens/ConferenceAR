@@ -15,12 +15,15 @@ public class PressableButtons
 
 public class NotificationManager : MonoBehaviour
 {
-    
     public PressableButtons buttons;
     [SerializeField] GameObject matchingUI;
+    [SerializeField] GameObject newMatchingUI;
     [SerializeField] GameObject profileUI;
     [SerializeField] GameObject timeSetUI;
     [SerializeField] GameObject afMatchingUI;
+    [SerializeField] GameObject acceptPopupUI;
+    [SerializeField] GameObject declinePopupUI;
+    [SerializeField] GameObject matchingFailPopupUI;
 
     private string processingUserId = "";
     private int time = 0;
@@ -67,6 +70,7 @@ public class NotificationManager : MonoBehaviour
     public void SendDeclineMessage()
     {
         Debug.Log($"Decline User: {processingUserId}");
+        UserMatchingManagerSM.Instance.isUserMatchingFailed = true;
     }
 
     public void SendHoldMessage()
@@ -83,6 +87,26 @@ public class NotificationManager : MonoBehaviour
     public void CloseMatchingUI()
     {
         matchingUI.SetActive(false);
+    }
+
+    public void OpenMatchingFailUI()
+    {
+        matchingFailPopupUI.SetActive(true);
+    }
+
+    public void CloseMatchingFailUI()
+    {
+        matchingFailPopupUI.SetActive(false);
+    }
+
+    public void OpenNewMatchingUI()
+    {
+        newMatchingUI.SetActive(true);
+    }
+
+    public void CloseNewMatchingUI()
+    {
+        newMatchingUI.SetActive(false);
     }
 
     public void OpenProfileUI()
@@ -119,21 +143,41 @@ public class NotificationManager : MonoBehaviour
     {
         afMatchingUI.SetActive(false);
     }
+
+    public void OpenAcceptPopupUI()
+    {
+        acceptPopupUI.SetActive(true);
+    }
+
+    public void CloseAcceptPopupUI()
+    {
+        acceptPopupUI.SetActive(false);
+    }
+
+    public void OpenDeclinePopupUI()
+    {
+        declinePopupUI.SetActive(true);
+    }
+
+    public void CloseDeclinePopupUI()
+    {
+        declinePopupUI.SetActive(false);
+    }
     //////////////////////////////////////////////
 
 
     //////////////// TIME BUTTON Callbacks ///////////////
     public void MeetTimePlus()
     {
-        time += 10;
+        time += 1;
         Debug.Log(time);
     }
 
     public void MeetTimeMinus()
     {
-        if (time >= 10)
+        if (time >= 1)
         {
-            time -= 10;
+            time -= 1;
         }
         Debug.Log(time);
     }
@@ -141,18 +185,29 @@ public class NotificationManager : MonoBehaviour
     public void MeetTimeZero()
     {
         time = 0;
+        Debug.Log(time);
     }
 
     public void MeetTimeUpdate()
     {
-        if (time > 0)
-        {
-            // !!!! DB 업데이트
-        }
-        else
-        {
-            SendAcceptMessage();
-        }
+
+        Debug.Log($"time is {time}");
+
+        //if (time == 0)
+        //{
+        //    // !!!!바로 만남
+        //    SendAcceptMessage();
+        //}
+        //else
+        //{
+        //    Debug.Log("dasdsdadasdadsd");
+        //    // !!!time 값을 DB에 업데이트
+        //}
+    }
+
+    public float GetTime()
+    {
+        return (float)time * 60;
     }
     //////////////////////////////////////////////
 }
