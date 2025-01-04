@@ -14,7 +14,7 @@ public class UserMatchingManager : HostOnlyBehaviour
     public const byte RenameEvent = 1; // 유저 이름 변경 이벤트 코드
     public const byte SendUserInfoEvent = 2; // 유저 정보 전송 이벤트 코드
     public const byte SendUsersInfoEvent = 3; // 모든 유저 정보 전송 이벤트 코드
-
+    public const byte SendMatchInfoEvent = 4; // 매칭 요청 이벤트 코드
     private void OnEnable()
     {
         PhotonNetwork.NetworkingClient.EventReceived += HandleEvent; // 이벤트 핸들러 등록
@@ -154,14 +154,6 @@ public class UserMatchingManager : HostOnlyBehaviour
         FileLogger.Log("UserMatchingManager 잉여 데이터 정리 완료", this);
 
         base.OnStoppedBeingHost();
-    }
-
-    private void LogCurrentPlayersInfo()
-    {
-        foreach (var player in PhotonNetwork.PlayerList)
-        {
-            FileLogger.Log($"{myUserInfo.photonUserName}: {myUserInfo.photonRole}", this);
-        }
     }
 
     private int GetCentralHostActorNumber()

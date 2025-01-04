@@ -14,6 +14,14 @@ public class UserInfo{
     public string currentState {get;set;}
 }
 
+[Serializable]
+public class MatchInfo
+{
+    public string userWhoSend {get;set;}
+    public string userWhoReceive {get;set;}
+    public string matchRequest {get;set;}
+}
+
 public class PhotonCustomTypeRegistration : MonoBehaviourPunCallbacks
 {
     private void Awake()
@@ -33,8 +41,42 @@ public class PhotonCustomTypeRegistration : MonoBehaviourPunCallbacks
             DeserializeUserInfoList
         );
 
+        PhotonPeer.RegisterType(
+            typeof(MatchInfo),
+            (byte)'M',
+            SerializeMatchInfo,
+            DeserializeMatchInfo
+        );
     }
-    
+
+    private static byte[] SerializeMatchInfo(object data)
+    {
+        MatchInfo matchInfo = (MatchInfo)data;
+        using (MemoryStream stream = new MemoryStream())
+        {
+            using (BinaryWriter writer = new BinaryWriter(stream))
+            {
+                writer.Write(matchInfo.userWhoSend ?? "");
+                writer.Write(matchInfo.userWhoReceive ?? "");
+                writer.Write(matchInfo.matchRequest ?? "");
+            }
+            return stream.ToArray();
+        }
+    }
+    private static object DeserializeMatchInfo(byte[] data)
+    {
+        MatchInfo matchInfo = new MatchInfo();
+        using (MemoryStream stream = new MemoryStream(data))
+        {
+            using (BinaryReader reader = new BinaryReader(stream))
+            {
+                matchInfo.userWhoSend = reader.ReadString();
+                matchInfo.userWhoReceive = reader.ReadString();
+                matchInfo.matchRequest = reader.ReadString();
+            }
+        }
+        return matchInfo;
+    }
     // UserInfo를 직렬화하는 함수
     private static byte[] SerializeUserInfo(object customObject)
     {
