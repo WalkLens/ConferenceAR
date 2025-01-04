@@ -249,18 +249,18 @@ public class DebugUserInfos : MonoBehaviour
     public void ShowMatchRequestUI()
     {
         // TODO: 매칭 요청을 받고 그에 해당하는 UI를 띄운다.
-        matchButtonGameObject.SetActive(true);
-        
+        matchButtonGameObject.SetActive(true);        
+
     }
     public void ShowMatchRequestYesUI()
     {
         // TODO: 매칭 응답(Yes)을 받고 그에 해당하는 UI를 띄운다.
-        
+
     }
     public void ShowMatchRequestNoUI()
     {
         // TODO: 매칭 응답(No)을 받고 그에 해당하는 UI를 띄운다.
-        
+
     }
     void OnDestroy()
     {

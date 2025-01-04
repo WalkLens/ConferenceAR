@@ -52,8 +52,9 @@ public class UserMatchingManager : HostOnlyBehaviour
 
                 // 데이터 처리
                 UserInfo receivedUserInfo = (UserInfo)data[0];
-                userInfos.Add(receivedUserInfo);
+                userInfos.Add(receivedUserInfo); // 연결된 유저 데이터가 리스트에 추가됨
 
+                // 모든 유저 정보 시각화
                 debugUserInfo.LogAllUsersInfo(ref userInfos);
                 DebugUserInfos.Instance.DebugAllUsersInfo();
 
@@ -145,6 +146,7 @@ public class UserMatchingManager : HostOnlyBehaviour
 
                 // 데이터 처리
                 MatchInfo receivedMatchInfo = (MatchInfo)data[0];
+
                 if (debugUserInfo == null)
                 {
                     FileLogger.Log("debugUserInfo is null", this);
@@ -154,6 +156,7 @@ public class UserMatchingManager : HostOnlyBehaviour
                 debugUserInfo.receivedMatchInfo = receivedMatchInfo;
                 debugUserInfo.DebugMatchText();
                 
+                // 매칭 요청에 대한 처리 - Request일 때 작동 확인
                 if (debugUserInfo.receivedMatchInfo.matchRequest == "Request...")   // 매칭 요청을 받음
                 {
                     debugUserInfo.SetMatchButtonStatus(true);
