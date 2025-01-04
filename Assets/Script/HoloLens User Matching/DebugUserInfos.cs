@@ -32,7 +32,7 @@ public class DebugUserInfos : MonoBehaviour
     private void Awake()
     {
         if (Instance == null) Instance = this;
-        SetDebugUserButtons();
+        CacheDebugUserButtons();
         // Debug.Log(Application.persistentDataPath);
     }
 
@@ -57,27 +57,16 @@ public class DebugUserInfos : MonoBehaviour
             userButtonTexts[i].text = "player_@";
         }
 
-
-        List<UserInfo> userInfos = new List<UserInfo>();
-        UserInfo myUserInfo = new UserInfo();
-        foreach (var hostBehaviour in HostBehaviourManager.Instance.hostBehaviours)
-        {
-            if (hostBehaviour.TryGetComponent(out UserMatchingManager matchingManager))
-            {
-                userInfos = matchingManager.userInfos;
-                myUserInfo = matchingManager.myUserInfo;
-            }
-        }
-
-        for (int i = 0; i < userInfos.Count; i++)
+        for (int i = 0; i < UserMatchingManager.Instance.userInfos.Count; i++)
         {
             int index = i; // 안전한 캡처를 위해 별도의 변수 사용
-            userButtonTexts[i].text = userInfos[index].photonUserName;
+            userButtonTexts[i].text = UserMatchingManager.Instance.userInfos[index].photonUserName;
             userButtons[i].onClick
                 .AddListener(() =>
                 {
                     matchInfo.matchRequest = "Request...";
-                    SendMatchRequestToAUser(userInfos[index].photonUserName, myUserInfo);
+                    SendMatchRequestToAUser(UserMatchingManager.Instance.userInfos[index].photonUserName, 
+                        UserMatchingManager.Instance.myUserInfo);
                 });
         }
     }
@@ -190,7 +179,7 @@ public class DebugUserInfos : MonoBehaviour
 
     #region DEBUG
 
-    private void SetDebugUserButtons()
+    private void CacheDebugUserButtons()
     {
         // 버튼, 텍스트 할당
         userButtonTexts = new TextMeshProUGUI[buttonTransforms.Length];
@@ -228,15 +217,8 @@ public class DebugUserInfos : MonoBehaviour
     {
         if (HostBehaviourManager.Instance.IsCentralHost)
         {
-            List<UserInfo> userInfos = new List<UserInfo>();
-            foreach (var hostBehaviour in HostBehaviourManager.Instance.hostBehaviours)
-            {
-                if (hostBehaviour.TryGetComponent(out UserMatchingManager matchingManager))
-                    userInfos = matchingManager.userInfos;
-            }
-
             userInfosText.text = ""; // 텍스트 초기화
-            foreach (var userInfo in userInfos)
+            foreach (var userInfo in UserMatchingManager.Instance.userInfos)
             {
                 userInfosText.text +=
                     $"Room: {userInfo.currentRoomNumber}, Role: {userInfo.photonRole}, UserName: {userInfo.photonUserName}, State: {userInfo.currentState}, \n";
@@ -244,15 +226,8 @@ public class DebugUserInfos : MonoBehaviour
         }
         else
         {
-            List<UserInfo> userInfos = new List<UserInfo>();
-            foreach (var hostBehaviour in HostBehaviourManager.Instance.hostBehaviours)
-            {
-                if (hostBehaviour.TryGetComponent(out UserMatchingManager matchingManager))
-                    userInfos = matchingManager.userInfos;
-            }
-
             userInfosText.text = ""; // 텍스트 초기화
-            foreach (var userInfo in userInfos)
+            foreach (var userInfo in UserMatchingManager.Instance.userInfos)
             {
                 userInfosText.text +=
                     $"Room: {userInfo.currentRoomNumber}, Role: {userInfo.photonRole}, UserName: {userInfo.photonUserName}, State: {userInfo.currentState}, \n";
