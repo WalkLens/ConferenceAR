@@ -118,17 +118,30 @@ public class UserMatchingManager : HostOnlyBehaviour
             try
             {
                 // 데이터 무결성 확인
-                object[] data = (object[])photonEvent.CustomData;
-                if (data.Length < 1 || !(data[0] is MatchInfo))
+                if (photonEvent.CustomData == null)
                 {
-                    FileLogger.Log("Invalid CustomData received", this);
+                    FileLogger.Log("CustomData is null", this);
                     return;
                 }
-                
+
+                object[] data = photonEvent.CustomData as object[];
+                if (data == null || data.Length < 1 || !(data[0] is MatchInfo))
+                {
+                    FileLogger.Log("Invalid CustomData received or missing MatchInfo", this);
+                    return;
+                }
+
                 // 데이터 처리
-                MatchInfo receivedUserInfo = (MatchInfo)data[0];
-                debugUserInfo.matchInfo = receivedUserInfo;
-                
+                MatchInfo receivedMatchInfo = (MatchInfo)data[0];
+                if (debugUserInfo == null)
+                {
+                    FileLogger.Log("debugUserInfo is null", this);
+                    return;
+                }
+
+                debugUserInfo.receivedMatchInfo = receivedMatchInfo;
+                debugUserInfo.DebugMatchText();
+                debugUserInfo.SetMatchButtonStatus(true);
             }
             catch (Exception ex)
             {
@@ -150,7 +163,6 @@ public class UserMatchingManager : HostOnlyBehaviour
             currentState = "None"
         };
         FileLogger.Log($"{myUserInfo.photonUserName}: {myUserInfo.photonRole}", this);
-
         FileLogger.Log("UserMatchingManager 사용자 접속 초기 정보 생성 완료", this);
         base.HandleOnJoinedRoom();
     }

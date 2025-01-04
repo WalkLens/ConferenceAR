@@ -7,6 +7,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class DebugUserInfos : MonoBehaviour
@@ -19,12 +20,20 @@ public class DebugUserInfos : MonoBehaviour
     public Button[] userButtons;
     public static DebugUserInfos Instance;
 
-    public MatchInfo matchInfo;
+    public MatchInfo matchInfo; // 보낼 Match Info
+    public MatchInfo receivedMatchInfo; // 받을 Match Info
+    public GameObject matchButtonGameObject;
+    public Button[] matchButtons;
+    public TextMeshProUGUI receivedMatchInfoText;
+    public TextMeshProUGUI matchInfoText;
+
+    public const byte SendMatchInfoEvent = 4; // 매칭 요청 이벤트 코드
 
     private void Awake()
     {
         if (Instance == null) Instance = this;
         SetDebugButtons();
+        // Debug.Log(Application.persistentDataPath);
     }
 
     private void Update()
@@ -46,6 +55,17 @@ public class DebugUserInfos : MonoBehaviour
             Button button = buttonTransforms[i].GetComponentInChildren<Button>();
             userButtons[i] = button;
         }
+    }
+
+    public void DebugMatchText()
+    {
+        receivedMatchInfoText.text = $"• userWhoSend: {receivedMatchInfo.userWhoSend} \n" +
+                                     $"• userWhoReceived: {receivedMatchInfo.userWhoReceive} \n" +
+                                     $"• matchRequest: {receivedMatchInfo.matchRequest} ";
+
+        matchInfoText.text = $"• userWhoSend: {matchInfo.userWhoSend} \n" +
+                             $"• userWhoReceived: {matchInfo.userWhoReceive} \n" +
+                             $"• matchRequest: {matchInfo.matchRequest} ";
     }
 
     private void SetButtonTextsFromAllUsersInfo()
@@ -80,9 +100,70 @@ public class DebugUserInfos : MonoBehaviour
             int index = i; // 안전한 캡처를 위해 별도의 변수 사용
             userButtonTexts[i].text = userInfos[index].photonUserName;
             userButtons[i].onClick
-                .AddListener(() => SendMatchRequestToAUser(userInfos[index].photonUserName, myUserInfo));
+                .AddListener(() =>
+                {
+                    matchInfo.matchRequest = "Request...";   
+                    SendMatchRequestToAUser(userInfos[index].photonUserName, myUserInfo);
+                });
         }
     }
+
+    public void SetMatchButtonStatus(bool status)
+    {
+        UserInfo myUserInfo = new UserInfo();
+        foreach (var hostBehaviour in HostBehaviourManager.Instance.hostBehaviours)
+        {
+            if (hostBehaviour.TryGetComponent(out UserMatchingManager matchingManager))
+            {
+                myUserInfo = matchingManager.myUserInfo;
+            }
+        }
+
+
+        if (status)
+        {
+            // true이면 Match 응답 버튼과 관련된 부분에 기능 할당
+            matchButtonGameObject.SetActive(true);
+
+            // 보낼 Match Info 생성 
+            matchInfo = new MatchInfo
+            {
+                userWhoSend = myUserInfo.photonUserName,
+                userWhoReceive = "",
+                matchRequest = ""
+            };
+            DebugMatchText();
+
+
+            // 버튼에 기능 추가
+            matchButtons[0].onClick.AddListener(() =>
+            {
+                matchInfo.matchRequest = "Yes";
+
+                // 실제 메서드 실행
+                SendMatchRequestToAUser(receivedMatchInfo.userWhoSend, myUserInfo);
+            });
+            matchButtons[1].onClick.AddListener(() =>
+            {
+                matchInfo.matchRequest = "No";
+
+                // 실제 메서드 실행
+                SendMatchRequestToAUser(receivedMatchInfo.userWhoSend, myUserInfo);
+            });
+        }
+        else
+        {
+            // false이면 Match 응답 버튼과 관련된 부분에 기능 지우기
+            // 버튼 기능 지우기
+            for (int i = 0; i < matchButtons.Length; i++)
+            {
+                matchButtons[i].onClick.RemoveAllListeners();
+            }
+
+            matchButtonGameObject.SetActive(false);
+        }
+    }
+
 
     public void SendMatchRequestToAUser(string targetUserName, UserInfo myUserInfo)
     {
@@ -100,20 +181,14 @@ public class DebugUserInfos : MonoBehaviour
             return;
         }
 
-        // MatchInfo가 없다면 새로 생성
-        // MatchInfo를 받았다(= 매칭 요청 받은 상태)면 그대로 전송
-        if (matchInfo == null)
-        {
-            matchInfo = new MatchInfo
-            {
-                userWhoSend = myUserInfo.photonUserName,
-                userWhoReceive = targetUserName,
-                matchRequest = ""
-            };
-        }
-        FileLogger.Log($"MatchInfo to send : User who send: {matchInfo.userWhoSend}, User who receive: {matchInfo.userWhoReceive}, matchRequest: {matchInfo.matchRequest}");
+        matchInfo.userWhoSend = myUserInfo.photonUserName;
+        matchInfo.userWhoReceive = targetUserName;
+        DebugMatchText();
 
-        // MatchInfo를 포함한 데이터 생성
+        FileLogger.Log($"MatchInfo to send : User who send: {matchInfo.userWhoSend}, " +
+                       $"User who receive: {matchInfo.userWhoReceive}, matchRequest: {matchInfo.matchRequest}");
+
+        // MatchInfo 포함한 데이터 생성
         object[] data = new object[] { matchInfo };
 
         // RaiseEventOptions 설정
@@ -124,9 +199,9 @@ public class DebugUserInfos : MonoBehaviour
 
         try
         {
-            PhotonNetwork.RaiseEvent(4, data, options, SendOptions.SendReliable);
+            PhotonNetwork.RaiseEvent(SendMatchInfoEvent, data, options, SendOptions.SendReliable);
             FileLogger.Log($"Send Message to {targetUserName}({targetActorNumber})", this);
-            
+
             // 전송 후에 match 정보 지움.
             matchInfo = null;
         }
