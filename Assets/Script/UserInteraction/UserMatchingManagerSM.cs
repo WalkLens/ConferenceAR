@@ -161,11 +161,11 @@ public class UserMatchingManagerSM : MonoBehaviour
                 {
                     interactionUIManager.OpenBox();
                 }
-                if (isUserFileSended)           // 2) 파일이 왔는지 확인
-                {
-                    notificationManager.OnFileReceived(imsiId);
-                    isUserFileSended = false;
-                }
+                //if (isUserFileSended)           // 2) 파일이 왔는지 확인
+                //{
+                //    notificationManager.OnFileReceived(imsiId);
+                //    isUserFileSended = false;
+                //}
                 if (isUserMatchingReceived)       // 3) 새로운 매칭 요청이 왔다면
                 {
                     notificationManager.OpenNewMatchingUI();

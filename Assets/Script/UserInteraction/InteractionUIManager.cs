@@ -11,7 +11,7 @@ public class InteractionUIManager : MonoBehaviour
     private LineRenderer lineRenderer;
     //private MRTKLineVisual mrtkLineVisual;
 
-    private bool isShowProfile = false;
+    //private bool isShowProfile = false;
 
     //[SerializeField] GameObject interactionUI;
     [SerializeField] GameObject box;

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using CustomLogger;
 using ExitGames.Client.Photon;
+using MixedReality.Toolkit.UX;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
@@ -23,11 +24,16 @@ public class DebugUserInfos : MonoBehaviour
     public MatchInfo matchInfo; // 보낼 Match Info
     public MatchInfo receivedMatchInfo; // 받을 Match Info
     public GameObject matchButtonGameObject;
-    public Button[] matchButtons;
+    public PressableButton[] matchButtons;          //============ SM MODI ============//
     public TextMeshProUGUI receivedMatchInfoText;
     public TextMeshProUGUI matchInfoText;
 
     public const byte SendMatchInfoEvent = 4; // 매칭 요청 이벤트 코드
+
+    //============ SM ADD ============//
+    public NotificationManager notificationManager;
+    public int selectedUserIdx;
+    //============ SM ADD ============//
 
     private void Awake()
     {
@@ -67,9 +73,19 @@ public class DebugUserInfos : MonoBehaviour
             userButtons[i].onClick
                 .AddListener(() =>
                 {
+                    //==== SM MODI ====//
                     matchInfo.matchRequest = "Request...";
-                    SendMatchRequestToAUser(UserMatchingManager.Instance.userInfos[index].photonUserName,
-                        UserMatchingManager.Instance.myUserInfo);
+                    // 버튼을 누르면 바로 데이터 보내는 것이 아닌, 프로필 확인으로 변경
+                    //SendMatchRequestToAUser(UserMatchingManager.Instance.userInfos[index].photonUserName,
+                    //    UserMatchingManager.Instance.myUserInfo);
+                    selectedUserIdx = index;
+                    Debug.Log(selectedUserIdx);
+                    //==== SM MODI ====//
+
+                    //==== SM ADD ====//
+                    notificationManager.OpenMatchingSendUI();
+                    // TODO : 나타나는 UI에 DB 연결되어 데이터 작성돼야 함
+                    //==== SM ADD ====//
                 });
         }
     }
@@ -90,7 +106,7 @@ public class DebugUserInfos : MonoBehaviour
 
 
             // 버튼에 기능 추가
-            matchButtons[0].onClick.AddListener(() =>
+            matchButtons[0].OnClicked.AddListener(() =>
             {
                 matchInfo.matchRequest = "Yes";
 
@@ -99,7 +115,7 @@ public class DebugUserInfos : MonoBehaviour
 
                 matchButtonGameObject.SetActive(false);
             });
-            matchButtons[1].onClick.AddListener(() =>
+            matchButtons[1].OnClicked.AddListener(() =>
             {
                 matchInfo.matchRequest = "No";
 
@@ -115,13 +131,14 @@ public class DebugUserInfos : MonoBehaviour
             // 버튼 기능 지우기
             for (int i = 0; i < matchButtons.Length; i++)
             {
-                matchButtons[i].onClick.RemoveAllListeners();
+                matchButtons[i].OnClicked.RemoveAllListeners();
             }
 
             matchButtonGameObject.SetActive(false);
         }
     }
 
+    // 다른 사람에게 요청을 보낼 시 작동
     public void SendMatchRequestToAUser(string targetUserName, UserInfo myUserInfo)
     {
         // player 이름에 해당하는 photon Actor Number 획득
@@ -129,7 +146,8 @@ public class DebugUserInfos : MonoBehaviour
 
         FileLogger.Log($"Send Message to {targetUserName}({targetActorNumber})", this);
 
-        // TODO: 매칭 요청 보내는 작업 구현 
+        // TODO: 매칭 요청 보내는 작업 구현
+
 
         // 유효성 검사: Actor Number 확인
         if (PhotonNetwork.CurrentRoom.GetPlayer(targetActorNumber) == null)
