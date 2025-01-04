@@ -58,7 +58,6 @@
     "com.unity.modules.video": "1.0.0",
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
-    "com.unity.modules.xr": "1.0.0",
-    "com.microsoft.mixedreality.webview.unity": "file:MixedReality/com.microsoft.mixedreality.webview.unity-0.22.7-pre.1.tgz"
+    "com.unity.modules.xr": "1.0.0"
   }
 }
