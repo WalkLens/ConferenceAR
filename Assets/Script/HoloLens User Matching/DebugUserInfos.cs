@@ -32,7 +32,7 @@ public class DebugUserInfos : MonoBehaviour
     private void Awake()
     {
         if (Instance == null) Instance = this;
-        SetDebugButtons();
+        SetDebugUserButtons();
         // Debug.Log(Application.persistentDataPath);
     }
 
@@ -40,32 +40,6 @@ public class DebugUserInfos : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.D))
             DebugAllUsersInfo();
-    }
-
-    private void SetDebugButtons()
-    {
-        // 버튼, 텍스트 할당
-        userButtonTexts = new TextMeshProUGUI[buttonTransforms.Length];
-        userButtons = new Button[buttonTransforms.Length];
-        for (int i = 0; i < userButtonTexts.Length; i++)
-        {
-            TextMeshProUGUI buttonText = buttonTransforms[i].GetComponentInChildren<TextMeshProUGUI>();
-            userButtonTexts[i] = buttonText;
-
-            Button button = buttonTransforms[i].GetComponentInChildren<Button>();
-            userButtons[i] = button;
-        }
-    }
-
-    public void DebugMatchText()
-    {
-        receivedMatchInfoText.text = $"• userWhoSend: {receivedMatchInfo.userWhoSend} \n" +
-                                     $"• userWhoReceived: {receivedMatchInfo.userWhoReceive} \n" +
-                                     $"• matchRequest: {receivedMatchInfo.matchRequest} ";
-
-        matchInfoText.text = $"• userWhoSend: {matchInfo.userWhoSend} \n" +
-                             $"• userWhoReceived: {matchInfo.userWhoReceive} \n" +
-                             $"• matchRequest: {matchInfo.matchRequest} ";
     }
 
     private void SetButtonTextsFromAllUsersInfo()
@@ -102,7 +76,7 @@ public class DebugUserInfos : MonoBehaviour
             userButtons[i].onClick
                 .AddListener(() =>
                 {
-                    matchInfo.matchRequest = "Request...";   
+                    matchInfo.matchRequest = "Request...";
                     SendMatchRequestToAUser(userInfos[index].photonUserName, myUserInfo);
                 });
         }
@@ -142,7 +116,7 @@ public class DebugUserInfos : MonoBehaviour
 
                 // 실제 메서드 실행
                 SendMatchRequestToAUser(receivedMatchInfo.userWhoSend, myUserInfo);
-                
+
                 matchButtonGameObject.SetActive(false);
             });
             matchButtons[1].onClick.AddListener(() =>
@@ -151,7 +125,7 @@ public class DebugUserInfos : MonoBehaviour
 
                 // 실제 메서드 실행
                 SendMatchRequestToAUser(receivedMatchInfo.userWhoSend, myUserInfo);
-                
+
                 matchButtonGameObject.SetActive(false);
             });
         }
@@ -168,11 +142,10 @@ public class DebugUserInfos : MonoBehaviour
         }
     }
 
-
     public void SendMatchRequestToAUser(string targetUserName, UserInfo myUserInfo)
     {
         // player 이름에 해당하는 photon Actor Number 획득
-        int targetActorNumber = UserMatchingManager.GetPlayerActorNumber(targetUserName);
+        int targetActorNumber = PhotonUserUtility.GetPlayerActorNumber(targetUserName);
 
         FileLogger.Log($"Send Message to {targetUserName}({targetActorNumber})", this);
 
@@ -213,6 +186,34 @@ public class DebugUserInfos : MonoBehaviour
         {
             FileLogger.Log($"Failed to send UserInfo: {ex.Message}", this);
         }
+    }
+
+    #region DEBUG
+
+    private void SetDebugUserButtons()
+    {
+        // 버튼, 텍스트 할당
+        userButtonTexts = new TextMeshProUGUI[buttonTransforms.Length];
+        userButtons = new Button[buttonTransforms.Length];
+        for (int i = 0; i < userButtonTexts.Length; i++)
+        {
+            TextMeshProUGUI buttonText = buttonTransforms[i].GetComponentInChildren<TextMeshProUGUI>();
+            userButtonTexts[i] = buttonText;
+
+            Button button = buttonTransforms[i].GetComponentInChildren<Button>();
+            userButtons[i] = button;
+        }
+    }
+
+    public void DebugMatchText()
+    {
+        receivedMatchInfoText.text = $"• userWhoSend: {receivedMatchInfo.userWhoSend} \n" +
+                                     $"• userWhoReceived: {receivedMatchInfo.userWhoReceive} \n" +
+                                     $"• matchRequest: {receivedMatchInfo.matchRequest} ";
+
+        matchInfoText.text = $"• userWhoSend: {matchInfo.userWhoSend} \n" +
+                             $"• userWhoReceived: {matchInfo.userWhoReceive} \n" +
+                             $"• matchRequest: {matchInfo.matchRequest} ";
     }
 
     public void DebugMyUserInfo(UserInfo userInfo)
@@ -265,6 +266,18 @@ public class DebugUserInfos : MonoBehaviour
 
         SetButtonTextsFromAllUsersInfo();
     }
+
+
+    public void LogAllUsersInfo(ref List<UserInfo> allUsersInfo)
+    {
+        foreach (UserInfo userInfo in allUsersInfo)
+        {
+            FileLogger.Log(
+                $"{userInfo.currentRoomNumber} || {userInfo.photonRole} || {userInfo.photonUserName} || {userInfo.currentState}");
+        }
+    }
+
+    #endregion
 
     void OnDestroy()
     {

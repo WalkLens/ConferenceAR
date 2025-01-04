@@ -8,6 +8,7 @@ using UnityEngine;
 
 public class UserMatchingManager : HostOnlyBehaviour
 {
+    public static UserMatchingManager Instance;
     public UserInfo myUserInfo; // 나의 정보
     public List<UserInfo> userInfos = new List<UserInfo>(); // 모든 유저 정보 리스트
     public DebugUserInfos debugUserInfo;
@@ -15,6 +16,12 @@ public class UserMatchingManager : HostOnlyBehaviour
     public const byte SendUserInfoEvent = 2; // 유저 정보 전송 이벤트 코드
     public const byte SendUsersInfoEvent = 3; // 모든 유저 정보 전송 이벤트 코드
     public const byte SendMatchInfoEvent = 4; // 매칭 요청 이벤트 코드
+
+    private void Awake()
+    {
+        if (Instance == null) Instance = this;
+    }
+
     private void OnEnable()
     {
         PhotonNetwork.NetworkingClient.EventReceived += HandleEvent; // 이벤트 핸들러 등록
@@ -24,6 +31,8 @@ public class UserMatchingManager : HostOnlyBehaviour
     {
         PhotonNetwork.NetworkingClient.EventReceived -= HandleEvent; // 이벤트 핸들러 해제
     }
+
+    #region PhotonEventOVERRIDE
 
     public void HandleEvent(EventData photonEvent)
     {
@@ -44,8 +53,11 @@ public class UserMatchingManager : HostOnlyBehaviour
                 // 데이터 처리
                 UserInfo receivedUserInfo = (UserInfo)data[0];
                 userInfos.Add(receivedUserInfo);
-                HostBehaviourManager.Instance.LogAllUsersInfo(ref userInfos);
+                
+                debugUserInfo.LogAllUsersInfo(ref userInfos);
                 DebugUserInfos.Instance.DebugAllUsersInfo();
+                
+                // List<UserInfo> 동기화 
                 BroadcastUserInfos();
                 FileLogger.Log($"UserInfo received for {receivedUserInfo.photonUserName}", this);
             }
@@ -113,7 +125,7 @@ public class UserMatchingManager : HostOnlyBehaviour
         {
             SyncUserListWithPhotonPlayers();
         }
-        else if (photonEvent.Code == SendMatchInfoEvent)
+        else if (photonEvent.Code == SendMatchInfoEvent) // 매칭 요청, 응답 이벤트
         {
             try
             {
@@ -150,6 +162,10 @@ public class UserMatchingManager : HostOnlyBehaviour
         }
     }
 
+    #endregion
+
+    #region HostBehaviourOVERRIDE
+    
     public override void HandleOnJoinedRoom()
     {
         // 사용자가 방에 접속할 때 myUserInfo 초기화
@@ -188,38 +204,16 @@ public class UserMatchingManager : HostOnlyBehaviour
 
         base.OnStoppedBeingHost();
     }
+    #endregion
+    
+    
 
-    private int GetCentralHostActorNumber()
-    {
-        // 모든 플레이어를 순회하여 중앙 호스트의 ActorNumber를 반환
-        foreach (var player in PhotonNetwork.PlayerList)
-        {
-            FileLogger.Log($"UserMatchingManager {player.NickName}", this);
-            if (player.IsMasterClient && player.NickName == "CentralHost")
-            {
-                return player.ActorNumber; // 중앙 호스트의 ActorNumber 반환
-            }
-        }
-
-        return -1; // 중앙 호스트가 아닐 경우
-    }
-
-    // Player에게 메세지 보내기 위해 Actor Number 반환
-    public static int GetPlayerActorNumber(string photonUserName)
-    {
-        foreach (Player player in PhotonNetwork.PlayerList)
-        {
-            if(player.NickName == photonUserName)
-                return player.ActorNumber;
-        }
-        return -1;
-    }
     public void TrySendingUserInfo()
     {
         // 중앙 호스트에게 User Info 전송
         if (!FileLogger.GetRoleString().Equals("CentralHost"))
         {
-            int centralHostActorNumber = GetCentralHostActorNumber();
+            int centralHostActorNumber = PhotonUserUtility.GetCentralHostActorNumber();
             FileLogger.Log($"UserMatchingManager GetCentralHostActorNumber {centralHostActorNumber}", this);
             if (centralHostActorNumber != -1)
                 SendUserInfo(myUserInfo, centralHostActorNumber);

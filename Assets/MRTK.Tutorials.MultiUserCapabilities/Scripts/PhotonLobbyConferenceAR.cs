@@ -86,14 +86,16 @@ namespace MRTK.Tutorials.MultiUserCapabilities
             FileLogger.Log("Total players in room: " + (PhotonNetwork.CountOfPlayersInRooms + 1), this);
             
             string newNickName = "Player_" + PhotonNetwork.LocalPlayer.ActorNumber;
-            foreach (var hostBehaviour in HostBehaviourManager.Instance.hostBehaviours)
+            UserMatchingManager.Instance.UpdateNickNameAfterJoin(newNickName);
+            UserMatchingManager.Instance.TrySendingUserInfo();
+            /*foreach (var hostBehaviour in HostBehaviourManager.Instance.hostBehaviours)
             {
                 if (hostBehaviour.TryGetComponent(out UserMatchingManager hb))
                 {
                     hb.UpdateNickNameAfterJoin(newNickName);
                     hb.TrySendingUserInfo();
                 }
-            }
+            }*/
         }
         public override void OnJoinRoomFailed(short returnCode, string message)
         {
@@ -113,11 +115,6 @@ namespace MRTK.Tutorials.MultiUserCapabilities
             roomNumber++;
             FileLogger.Log("방 생성 완료: " + PhotonNetwork.CurrentRoom.Name, this);
             FileLogger.Log("방 번호: " + roomNumber, this);
-        }
-
-        public void OnCancelButtonClicked()
-        {
-            PhotonNetwork.LeaveRoom();
         }
 
         private void StartNetwork()
