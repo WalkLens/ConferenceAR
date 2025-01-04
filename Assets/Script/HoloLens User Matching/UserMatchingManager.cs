@@ -10,7 +10,7 @@ public class UserMatchingManager : HostOnlyBehaviour
 {
     public UserInfo myUserInfo; // 나의 정보
     public List<UserInfo> userInfos = new List<UserInfo>(); // 모든 유저 정보 리스트
-
+    public DebugUserInfos debugUserInfo;
     public const byte RenameEvent = 1; // 유저 이름 변경 이벤트 코드
     public const byte SendUserInfoEvent = 2; // 유저 정보 전송 이벤트 코드
     public const byte SendUsersInfoEvent = 3; // 모든 유저 정보 전송 이벤트 코드
@@ -95,7 +95,6 @@ public class UserMatchingManager : HostOnlyBehaviour
                 FileLogger.Log($"Failed to handle UserInfoList event: {ex.Message}", this);
             }
         }
-
         else if (photonEvent.Code == RenameEvent) // 닉네임 변경 이벤트
         {
             object[] data = (object[])photonEvent.CustomData;
@@ -113,6 +112,28 @@ public class UserMatchingManager : HostOnlyBehaviour
         else if (photonEvent.Code == 254) // 포톤 유저 한 명이 접속 종료 이벤트
         {
             SyncUserListWithPhotonPlayers();
+        }
+        else if (photonEvent.Code == SendMatchInfoEvent)
+        {
+            try
+            {
+                // 데이터 무결성 확인
+                object[] data = (object[])photonEvent.CustomData;
+                if (data.Length < 1 || !(data[0] is MatchInfo))
+                {
+                    FileLogger.Log("Invalid CustomData received", this);
+                    return;
+                }
+                
+                // 데이터 처리
+                MatchInfo receivedUserInfo = (MatchInfo)data[0];
+                debugUserInfo.matchInfo = receivedUserInfo;
+                
+            }
+            catch (Exception ex)
+            {
+                FileLogger.Log($"Error handling photon event: {ex.Message}", this);
+            }
         }
     }
 

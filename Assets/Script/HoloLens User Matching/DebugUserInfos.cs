@@ -100,6 +100,8 @@ public class DebugUserInfos : MonoBehaviour
             return;
         }
 
+        // MatchInfo가 없다면 새로 생성
+        // MatchInfo를 받았다(= 매칭 요청 받은 상태)면 그대로 전송
         if (matchInfo == null)
         {
             matchInfo = new MatchInfo
@@ -109,8 +111,7 @@ public class DebugUserInfos : MonoBehaviour
                 matchRequest = ""
             };
         }
-        // MatchInfo를 받았다(= 매칭 요청 받은 상태)면 그대로 전송
-
+        FileLogger.Log($"MatchInfo to send : User who send: {matchInfo.userWhoSend}, User who receive: {matchInfo.userWhoReceive}, matchRequest: {matchInfo.matchRequest}");
 
         // MatchInfo를 포함한 데이터 생성
         object[] data = new object[] { matchInfo };
