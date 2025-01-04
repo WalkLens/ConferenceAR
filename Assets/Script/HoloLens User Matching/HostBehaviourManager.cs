@@ -21,6 +21,8 @@ public class HostBehaviourManager : MonoBehaviourPunCallbacks
                )
             {
                 PhotonNetwork.NickName = "CentralHost";
+
+                // TODO: 코드가 불필요하게 복잡한 느낌.. 추후 수정 필요
                 foreach (var hostBehaviour in hostBehaviours)
                 {
                     // 최초 1회 Central Host로 변경 시에만 호출(반복 호출 방지)
@@ -86,11 +88,13 @@ public class HostBehaviourManager : MonoBehaviourPunCallbacks
 
     #endregion
 
+    #region HostStatus
+
     // 중앙 호스트 상태 업데이트
     public void UpdateCentralHostStatus(Player newMasterClient)
     {
         bool wasCentralHost = PhotonNetwork.IsMasterClient && PhotonNetwork.CurrentRoom.Name == "DefaultRoom";
-        bool willBeCentralHost = PhotonNetwork.LocalPlayer == newMasterClient;
+        bool willBeCentralHost = PhotonNetwork.LocalPlayer.Equals(newMasterClient);
 
         foreach (var behaviour in hostBehaviours)
         {
@@ -143,4 +147,6 @@ public class HostBehaviourManager : MonoBehaviourPunCallbacks
             behaviour.HandleOnJoinedRoom();
         }
     }
+
+    #endregion
 }

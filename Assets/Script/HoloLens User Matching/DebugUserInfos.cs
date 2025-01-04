@@ -42,6 +42,9 @@ public class DebugUserInfos : MonoBehaviour
             DebugAllUsersInfo();
     }
 
+    #region ButtonSetup
+
+    // 각 버튼에 필요한 기능을 할당한다.
     private void SetButtonTextsFromAllUsersInfo()
     {
         foreach (var userButton in userButtons)
@@ -65,7 +68,7 @@ public class DebugUserInfos : MonoBehaviour
                 .AddListener(() =>
                 {
                     matchInfo.matchRequest = "Request...";
-                    SendMatchRequestToAUser(UserMatchingManager.Instance.userInfos[index].photonUserName, 
+                    SendMatchRequestToAUser(UserMatchingManager.Instance.userInfos[index].photonUserName,
                         UserMatchingManager.Instance.myUserInfo);
                 });
         }
@@ -176,6 +179,8 @@ public class DebugUserInfos : MonoBehaviour
             FileLogger.Log($"Failed to send UserInfo: {ex.Message}", this);
         }
     }
+
+    #endregion
 
     #region DEBUG
 
