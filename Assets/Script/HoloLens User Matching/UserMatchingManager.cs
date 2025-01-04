@@ -156,6 +156,7 @@ public class UserMatchingManager : HostOnlyBehaviour
                 
                 if (debugUserInfo.receivedMatchInfo.matchRequest == "Request...")   // 매칭 요청을 받음
                 {
+                    debugUserInfo.SetMatchButtonStatus(true);
                     debugUserInfo.ShowMatchRequestUI(); 
                 }
                 else if (debugUserInfo.receivedMatchInfo.matchRequest == "Yes")     // 매칭 응답(Yes)을 받음
