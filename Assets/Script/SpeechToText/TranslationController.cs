@@ -19,6 +19,9 @@ public class TranslationController : MonoBehaviour
     private bool micPermissionGranted = false;
     ///private bool scanning = false;
 
+    private readonly string[] multipleTargetLangCodes = { "ru-RU", "es-ES", "de-DE", "zh-HK", "ko-KR", "en-US", "ja-JP" };
+
+
     private string fromLanguage = "";
     private string toLanguage = "";
 
@@ -74,7 +77,7 @@ public class TranslationController : MonoBehaviour
                 toLanguage = "ru-RU";
                 break;
             case TranslateToLanguage.Spanish:
-                fromLanguage = "es-ES";
+                toLanguage = "es-ES";
                 break;
             case TranslateToLanguage.German:
                 toLanguage = "de-DE";
@@ -138,7 +141,13 @@ public class TranslationController : MonoBehaviour
         {
             SpeechTranslationConfig config = SpeechTranslationConfig.FromSubscription(speechToTextController.SpeechServiceAPIKey, speechToTextController.SpeechServiceRegion);
             config.SpeechRecognitionLanguage = fromLanguage;
-            config.AddTargetLanguage(toLanguage);
+            //config.AddTargetLanguage(toLanguage);
+
+            foreach (string langCode in multipleTargetLangCodes)
+            {
+                config.AddTargetLanguage(langCode);
+            }
+
 
             translator = new TranslationRecognizer(config);
 
@@ -162,10 +171,18 @@ public class TranslationController : MonoBehaviour
             {
                 recognizedString = e.Result.Text;
 
+                translatedString = "";
+                foreach (var kvp in e.Result.Translations)
+                {
+                    // kvp.Key = 언어 코드, kvp.Value = 번역 결과
+                    translatedString += $"[{kvp.Key}]: {kvp.Value}\n";
+                }
+                /*
                 foreach (var element in e.Result.Translations)
                 {
                     translatedString = element.Value;
                 }
+                */
             }
         }
     }
@@ -175,10 +192,16 @@ public class TranslationController : MonoBehaviour
         if (e.Result.Reason == ResultReason.TranslatedSpeech)
         {
             recognizedString = e.Result.Text;
-
+            /*
             foreach (var element in e.Result.Translations)
             {
                 translatedString = element.Value;
+            }
+            */
+            translatedString = "";
+            foreach (var kvp in e.Result.Translations)
+            {
+                translatedString += $"[{kvp.Key}]: {kvp.Value}\n";
             }
         }
     }
