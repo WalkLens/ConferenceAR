@@ -19,6 +19,7 @@ public class HostOnlyBehaviour : MonoBehaviourPunCallbacks
         }
     }
 
+    #region PhotonEventOVERRIDE
     public override void OnJoinedRoom()
     {
         FileLogger.Log("OnJoinedRoom", this);
@@ -30,10 +31,14 @@ public class HostOnlyBehaviour : MonoBehaviourPunCallbacks
         HostBehaviourManager.Instance.HandleOnJoinedRoom();
     }
 
+    #endregion
+
+    #region HostBehaviourOVERRIDE
+
     public virtual void HandleOnJoinedRoom()
     {
         // 자식 클래스에서 이 메서드를 오버라이드하여 사용
-        
+
         FileLogger.Log("Handle On Joined Room", this);
     }
 
@@ -52,4 +57,6 @@ public class HostOnlyBehaviour : MonoBehaviourPunCallbacks
 
         FileLogger.Log("호스트 해제: 기존 호스트의 잉여 데이터 정리 완료", this);
     }
+    
+    #endregion
 }

@@ -32,7 +32,7 @@ public class DebugUserInfos : MonoBehaviour
     private void Awake()
     {
         if (Instance == null) Instance = this;
-        SetDebugButtons();
+        CacheDebugUserButtons();
         // Debug.Log(Application.persistentDataPath);
     }
 
@@ -42,32 +42,9 @@ public class DebugUserInfos : MonoBehaviour
             DebugAllUsersInfo();
     }
 
-    private void SetDebugButtons()
-    {
-        // 버튼, 텍스트 할당
-        userButtonTexts = new TextMeshProUGUI[buttonTransforms.Length];
-        userButtons = new Button[buttonTransforms.Length];
-        for (int i = 0; i < userButtonTexts.Length; i++)
-        {
-            TextMeshProUGUI buttonText = buttonTransforms[i].GetComponentInChildren<TextMeshProUGUI>();
-            userButtonTexts[i] = buttonText;
+    #region ButtonSetup
 
-            Button button = buttonTransforms[i].GetComponentInChildren<Button>();
-            userButtons[i] = button;
-        }
-    }
-
-    public void DebugMatchText()
-    {
-        receivedMatchInfoText.text = $"• userWhoSend: {receivedMatchInfo.userWhoSend} \n" +
-                                     $"• userWhoReceived: {receivedMatchInfo.userWhoReceive} \n" +
-                                     $"• matchRequest: {receivedMatchInfo.matchRequest} ";
-
-        matchInfoText.text = $"• userWhoSend: {matchInfo.userWhoSend} \n" +
-                             $"• userWhoReceived: {matchInfo.userWhoReceive} \n" +
-                             $"• matchRequest: {matchInfo.matchRequest} ";
-    }
-
+    // 각 버튼에 필요한 기능을 할당한다.
     private void SetButtonTextsFromAllUsersInfo()
     {
         foreach (var userButton in userButtons)
@@ -83,27 +60,16 @@ public class DebugUserInfos : MonoBehaviour
             userButtonTexts[i].text = "player_@";
         }
 
-
-        List<UserInfo> userInfos = new List<UserInfo>();
-        UserInfo myUserInfo = new UserInfo();
-        foreach (var hostBehaviour in HostBehaviourManager.Instance.hostBehaviours)
-        {
-            if (hostBehaviour.TryGetComponent(out UserMatchingManager matchingManager))
-            {
-                userInfos = matchingManager.userInfos;
-                myUserInfo = matchingManager.myUserInfo;
-            }
-        }
-
-        for (int i = 0; i < userInfos.Count; i++)
+        for (int i = 0; i < UserMatchingManager.Instance.userInfos.Count; i++)
         {
             int index = i; // 안전한 캡처를 위해 별도의 변수 사용
-            userButtonTexts[i].text = userInfos[index].photonUserName;
+            userButtonTexts[i].text = UserMatchingManager.Instance.userInfos[index].photonUserName;
             userButtons[i].onClick
                 .AddListener(() =>
                 {
-                    matchInfo.matchRequest = "Request...";   
-                    SendMatchRequestToAUser(userInfos[index].photonUserName, myUserInfo);
+                    matchInfo.matchRequest = "Request...";
+                    SendMatchRequestToAUser(UserMatchingManager.Instance.userInfos[index].photonUserName,
+                        UserMatchingManager.Instance.myUserInfo);
                 });
         }
     }
@@ -142,7 +108,7 @@ public class DebugUserInfos : MonoBehaviour
 
                 // 실제 메서드 실행
                 SendMatchRequestToAUser(receivedMatchInfo.userWhoSend, myUserInfo);
-                
+
                 matchButtonGameObject.SetActive(false);
             });
             matchButtons[1].onClick.AddListener(() =>
@@ -151,7 +117,7 @@ public class DebugUserInfos : MonoBehaviour
 
                 // 실제 메서드 실행
                 SendMatchRequestToAUser(receivedMatchInfo.userWhoSend, myUserInfo);
-                
+
                 matchButtonGameObject.SetActive(false);
             });
         }
@@ -168,11 +134,10 @@ public class DebugUserInfos : MonoBehaviour
         }
     }
 
-
     public void SendMatchRequestToAUser(string targetUserName, UserInfo myUserInfo)
     {
         // player 이름에 해당하는 photon Actor Number 획득
-        int targetActorNumber = UserMatchingManager.GetPlayerActorNumber(targetUserName);
+        int targetActorNumber = PhotonUserUtility.GetPlayerActorNumber(targetUserName);
 
         FileLogger.Log($"Send Message to {targetUserName}({targetActorNumber})", this);
 
@@ -215,6 +180,36 @@ public class DebugUserInfos : MonoBehaviour
         }
     }
 
+    #endregion
+
+    #region DEBUG
+
+    private void CacheDebugUserButtons()
+    {
+        // 버튼, 텍스트 할당
+        userButtonTexts = new TextMeshProUGUI[buttonTransforms.Length];
+        userButtons = new Button[buttonTransforms.Length];
+        for (int i = 0; i < userButtonTexts.Length; i++)
+        {
+            TextMeshProUGUI buttonText = buttonTransforms[i].GetComponentInChildren<TextMeshProUGUI>();
+            userButtonTexts[i] = buttonText;
+
+            Button button = buttonTransforms[i].GetComponentInChildren<Button>();
+            userButtons[i] = button;
+        }
+    }
+
+    public void DebugMatchText()
+    {
+        receivedMatchInfoText.text = $"• userWhoSend: {receivedMatchInfo.userWhoSend} \n" +
+                                     $"• userWhoReceived: {receivedMatchInfo.userWhoReceive} \n" +
+                                     $"• matchRequest: {receivedMatchInfo.matchRequest} ";
+
+        matchInfoText.text = $"• userWhoSend: {matchInfo.userWhoSend} \n" +
+                             $"• userWhoReceived: {matchInfo.userWhoReceive} \n" +
+                             $"• matchRequest: {matchInfo.matchRequest} ";
+    }
+
     public void DebugMyUserInfo(UserInfo userInfo)
     {
         myUserInfoText.text = $"• Current Room Number: {userInfo.currentRoomNumber} \n" +
@@ -227,15 +222,8 @@ public class DebugUserInfos : MonoBehaviour
     {
         if (HostBehaviourManager.Instance.IsCentralHost)
         {
-            List<UserInfo> userInfos = new List<UserInfo>();
-            foreach (var hostBehaviour in HostBehaviourManager.Instance.hostBehaviours)
-            {
-                if (hostBehaviour.TryGetComponent(out UserMatchingManager matchingManager))
-                    userInfos = matchingManager.userInfos;
-            }
-
             userInfosText.text = ""; // 텍스트 초기화
-            foreach (var userInfo in userInfos)
+            foreach (var userInfo in UserMatchingManager.Instance.userInfos)
             {
                 userInfosText.text +=
                     $"Room: {userInfo.currentRoomNumber}, Role: {userInfo.photonRole}, UserName: {userInfo.photonUserName}, State: {userInfo.currentState}, \n";
@@ -243,15 +231,8 @@ public class DebugUserInfos : MonoBehaviour
         }
         else
         {
-            List<UserInfo> userInfos = new List<UserInfo>();
-            foreach (var hostBehaviour in HostBehaviourManager.Instance.hostBehaviours)
-            {
-                if (hostBehaviour.TryGetComponent(out UserMatchingManager matchingManager))
-                    userInfos = matchingManager.userInfos;
-            }
-
             userInfosText.text = ""; // 텍스트 초기화
-            foreach (var userInfo in userInfos)
+            foreach (var userInfo in UserMatchingManager.Instance.userInfos)
             {
                 userInfosText.text +=
                     $"Room: {userInfo.currentRoomNumber}, Role: {userInfo.photonRole}, UserName: {userInfo.photonUserName}, State: {userInfo.currentState}, \n";
@@ -265,6 +246,18 @@ public class DebugUserInfos : MonoBehaviour
 
         SetButtonTextsFromAllUsersInfo();
     }
+
+
+    public void LogAllUsersInfo(ref List<UserInfo> allUsersInfo)
+    {
+        foreach (UserInfo userInfo in allUsersInfo)
+        {
+            FileLogger.Log(
+                $"{userInfo.currentRoomNumber} || {userInfo.photonRole} || {userInfo.photonUserName} || {userInfo.currentState}");
+        }
+    }
+
+    #endregion
 
     void OnDestroy()
     {
