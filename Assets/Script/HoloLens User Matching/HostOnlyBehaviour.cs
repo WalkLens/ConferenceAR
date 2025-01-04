@@ -20,7 +20,6 @@ public class HostOnlyBehaviour : MonoBehaviourPunCallbacks
     }
 
     #region PhotonEventOVERRIDE
-
     public override void OnJoinedRoom()
     {
         FileLogger.Log("OnJoinedRoom", this);

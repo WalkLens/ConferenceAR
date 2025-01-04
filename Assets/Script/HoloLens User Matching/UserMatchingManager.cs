@@ -53,10 +53,10 @@ public class UserMatchingManager : HostOnlyBehaviour
                 // 데이터 처리
                 UserInfo receivedUserInfo = (UserInfo)data[0];
                 userInfos.Add(receivedUserInfo);
-                
+
                 debugUserInfo.LogAllUsersInfo(ref userInfos);
                 DebugUserInfos.Instance.DebugAllUsersInfo();
-                
+
                 // List<UserInfo> 동기화 
                 BroadcastUserInfos();
                 FileLogger.Log($"UserInfo received for {receivedUserInfo.photonUserName}", this);
@@ -165,7 +165,7 @@ public class UserMatchingManager : HostOnlyBehaviour
     #endregion
 
     #region HostBehaviourOVERRIDE
-    
+
     public override void HandleOnJoinedRoom()
     {
         // 사용자가 방에 접속할 때 myUserInfo 초기화
@@ -204,9 +204,10 @@ public class UserMatchingManager : HostOnlyBehaviour
 
         base.OnStoppedBeingHost();
     }
+
     #endregion
-    
-    
+
+    #region MessageHandlers
 
     public void TrySendingUserInfo()
     {
@@ -310,4 +311,6 @@ public class UserMatchingManager : HostOnlyBehaviour
             FileLogger.Log($"Failed to send user info list: {ex.Message}", this);
         }
     }
+
+    #endregion
 }

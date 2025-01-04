@@ -24,6 +24,7 @@ public class MatchInfo
 
 public class PhotonCustomTypeRegistration : MonoBehaviourPunCallbacks
 {
+    // Photon 메세지로 주고받는 데이터 타입 정의하는 스크립트
     private void Awake()
     {
         // UserInfo 직렬화 등록
