@@ -4,11 +4,11 @@
         <ui:Label text="PIN 번호 설정" display-tooltip-when-elided="true" name="Header1" class="header" />
         <ui:Label text="전화번호 뒷자리 5개를 입력하세요" display-tooltip-when-elided="true" name="Explanation" style="-unity-font: url(&apos;project://database/Assets/Fonts/Pretendard-Regular.otf?fileID=12800000&amp;guid=de97269c10526034d89e5a16893d1126&amp;type=3#Pretendard-Regular&apos;);" />
         <ui:VisualElement name="PINField" style="width: 100%; padding-left: 30px; padding-right: 30px; padding-top: 30px; padding-bottom: 30px; flex-direction: row; justify-content: center; margin-top: 132px;">
-            <ui:TextField picking-mode="Ignore" label="Text Field" text="1" max-length="1" class="pin-text-field" style="width: 60px; height: 80px;" />
-            <ui:TextField picking-mode="Ignore" label="Text Field" text="2" max-length="1" class="pin-text-field" style="width: 60px; height: 80px;" />
-            <ui:TextField picking-mode="Ignore" label="Text Field" max-length="1" class="pin-text-field" style="width: 60px; height: 80px;" />
-            <ui:TextField picking-mode="Ignore" label="Text Field" max-length="1" class="pin-text-field" style="width: 60px; height: 80px;" />
-            <ui:TextField picking-mode="Ignore" label="Text Field" max-length="1" class="pin-text-field" style="width: 60px; height: 80px;" />
+            <ui:TextField picking-mode="Ignore" label="Text Field" text="1" max-length="1" name="PIN1" class="pin-text-field" style="width: 60px; height: 80px;" />
+            <ui:TextField picking-mode="Ignore" label="Text Field" text="2" max-length="1" name="PIN2" class="pin-text-field" style="width: 60px; height: 80px;" />
+            <ui:TextField picking-mode="Ignore" label="Text Field" max-length="1" name="PIN3" class="pin-text-field" style="width: 60px; height: 80px;" />
+            <ui:TextField picking-mode="Ignore" label="Text Field" max-length="1" name="PIN4" class="pin-text-field" style="width: 60px; height: 80px;" />
+            <ui:TextField picking-mode="Ignore" label="Text Field" max-length="1" name="PIN5" class="pin-text-field" style="width: 60px; height: 80px;" />
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

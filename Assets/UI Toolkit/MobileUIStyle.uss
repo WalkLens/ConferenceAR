@@ -1,3 +1,10 @@
+.unity-label {
+    margin-left: 6px;
+    margin-right: 6px;
+    margin-top: 6px;
+    margin-bottom: 6px;
+}
+
 .unity-base-field__input {
     border-left-width: 0;
     border-right-width: 0;
@@ -6,7 +13,10 @@
     background-color: rgba(0, 0, 0, 0);
     -unity-font-definition: initial;
     -unity-font: url('project://database/Assets/Fonts_Mobile/Mobile_Pretendard-Regular.otf?fileID=12800000&guid=a89cdade1f1a94c4d95268c2759459a5&type=3#Mobile_Pretendard-Regular');
-    color: rgba(255, 255, 255, 0.5);
+    margin-left: 8px;
+    margin-right: 8px;
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 
 .unity-toggle__checkmark {
@@ -38,6 +48,7 @@
     padding-top: 1px;
     padding-bottom: 1px;
     padding-right: 5px;
+    background-color: rgba(255, 255, 255, 0.04);
 }
 
 .unity-base-text-field:focus {
@@ -153,6 +164,7 @@
     border-right-width: 0;
     border-top-width: 0;
     border-bottom-width: 0;
+    -unity-text-align: middle-center;
 }
 
 .button:hover {
@@ -247,6 +259,7 @@
     margin-right: 0;
     margin-top: 0;
     margin-bottom: 0;
+    -unity-text-align: middle-center;
 }
 
 .tab-button-selected {
@@ -277,11 +290,15 @@
     padding-bottom: 5px;
     transition-duration: 0.1s;
     transition-property: all;
-    margin-top: 10px;
+    margin-top: 5px;
     height: 35px;
+    -unity-text-align: middle-center;
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-bottom: 5px;
 }
 
-.chip:active {
+.chip-active {
     color: rgb(0, 0, 0);
     background-color: rgb(255, 255, 255);
 }
@@ -296,13 +313,15 @@
     -unity-font-definition: initial;
     -unity-font: url('project://database/Assets/Fonts_Mobile/Mobile_Pretendard-Bold.otf?fileID=12800000&guid=ae90eba771d38664e98cbc517b66fe3a&type=3#Mobile_Pretendard-Bold');
     font-size: 32px;
-    -unity-text-align: middle-center;
     -unity-font-style: bold;
-    align-items: center;
-    justify-content: center;
     color: rgb(255, 255, 255);
     border-top-left-radius: 8px;
     border-bottom-left-radius: 8px;
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    -unity-text-align: middle-center;
 }
