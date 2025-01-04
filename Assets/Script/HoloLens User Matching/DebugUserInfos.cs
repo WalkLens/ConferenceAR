@@ -142,6 +142,8 @@ public class DebugUserInfos : MonoBehaviour
 
                 // 실제 메서드 실행
                 SendMatchRequestToAUser(receivedMatchInfo.userWhoSend, myUserInfo);
+                
+                matchButtonGameObject.SetActive(false);
             });
             matchButtons[1].onClick.AddListener(() =>
             {
@@ -149,6 +151,8 @@ public class DebugUserInfos : MonoBehaviour
 
                 // 실제 메서드 실행
                 SendMatchRequestToAUser(receivedMatchInfo.userWhoSend, myUserInfo);
+                
+                matchButtonGameObject.SetActive(false);
             });
         }
         else
