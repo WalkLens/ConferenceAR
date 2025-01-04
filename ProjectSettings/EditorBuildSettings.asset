@@ -5,9 +5,12 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Hololens2_UserInteraction.unity
     guid: 12cb5752936c2f940a3743f043b11479
+  - enabled: 1
+    path: Assets/Scene/NationalSpeechSharing_final.unity
+    guid: 328102bc307d78f43812c222ea9afdbb
   m_configObjects:
     com.unity.xr.arfoundation.simulation_settings: {fileID: 11400000, guid: 233ba4fbb182dc64a9a7eccf3b2714de, type: 2}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 9078da722e2389443875c401422caa4c, type: 2}

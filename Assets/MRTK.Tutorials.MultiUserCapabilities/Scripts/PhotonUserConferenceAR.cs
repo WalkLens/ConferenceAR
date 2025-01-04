@@ -1,5 +1,6 @@
 ﻿using Photon.Pun;
 using UnityEngine;
+using ExitGames.Client.Photon; // for Hashtable
 
 namespace MRTK.Tutorials.MultiUserCapabilities
 {
@@ -16,6 +17,11 @@ namespace MRTK.Tutorials.MultiUserCapabilities
 
             username = "User" + PhotonNetwork.NickName;
             pv.RPC("PunRPC_SetNickName", RpcTarget.AllBuffered, username);
+
+            PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable
+            {
+                { "LanguageCode", "ja-JP" }
+            });
         }
 
         [PunRPC]
@@ -42,5 +48,9 @@ namespace MRTK.Tutorials.MultiUserCapabilities
             else
                 Debug.LogError("PV is null");
         }
+
+
+
+
     }
 }

@@ -62,7 +62,7 @@ public class DatabaseManager : MonoBehaviour
     public bool RegisterProfile(UserData userdata)
     {
         // 요청 URL
-        string apiUrl = "http://127.0.0.1:8000/users/";
+        string apiUrl = "http://192.168.0.249:8000/users/";
 
         // UserData 객체 생성 및 데이터 초기화
         UserData userData = new UserData

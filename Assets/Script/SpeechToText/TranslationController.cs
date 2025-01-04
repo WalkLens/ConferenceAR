@@ -2,7 +2,10 @@ using UnityEngine;
 using Microsoft.CognitiveServices.Speech;
 using Microsoft.CognitiveServices.Speech.Translation;
 
-public class TranslationController : MonoBehaviour
+using Photon.Pun;
+using Newtonsoft.Json;
+
+public class TranslationController : MonoBehaviourPun
 {
     public delegate void TranslationRecognizerDelegate();
 
@@ -32,6 +35,12 @@ public class TranslationController : MonoBehaviour
     }
     void Start()
     {
+
+        if (photonView == null)
+        {
+            Debug.LogWarning("PhotonView not found! Please ensure this GameObject has a PhotonView component.");
+        }
+
         speechToTextController = SpeechToTextController.speechToTextController;
 
         if (SpeechToTextController.speechToTextController.outputText == null)
@@ -198,11 +207,38 @@ public class TranslationController : MonoBehaviour
                 translatedString = element.Value;
             }
             */
+
+            /*
             translatedString = "";
             foreach (var kvp in e.Result.Translations)
             {
                 translatedString += $"[{kvp.Key}]: {kvp.Value}\n";
+            }*/
+
+
+            var translationsDict = new System.Collections.Generic.Dictionary<string, string>();
+            foreach (var kvp in e.Result.Translations)
+            {
+                translationsDict[kvp.Key] = kvp.Value;
             }
+
+            string translationsJson = JsonConvert.SerializeObject(translationsDict);
+
+            translatedString = "";
+            foreach (var kvp in translationsDict)
+            {
+                translatedString += $"[{kvp.Key}]: {kvp.Value}\n";
+            }
+
+            Debug.Log($"[Recognized] Original: {recognizedString}");
+            Debug.Log($"[Recognized] Translations JSON: {translationsJson}");
+
+            if (photonView != null && photonView.IsMine)
+            {
+                photonView.RPC("OnReceiveAllTranslations", RpcTarget.All,
+                    recognizedString, translationsJson);
+            }
+
         }
     }
 
@@ -242,6 +278,8 @@ public class TranslationController : MonoBehaviour
 
     public void UpdateTranslator()
     {
+
+        /*
         if (speechToTextController.CurrentRecognitionMode() == RecognitionMode.Tralation_Recognizer)
         {
             if (recognizedString != "")
@@ -253,7 +291,40 @@ public class TranslationController : MonoBehaviour
                 }
             }
         }
+        */
+
+        if (speechToTextController.CurrentRecognitionMode() == RecognitionMode.Tralation_Recognizer)
+        {
+            lock (threadLocker)
+            {
+                if (!string.IsNullOrEmpty(recognizedString))
+                {
+                    // 원본 인식 문장
+                    speechToTextController.UpdateRecognizedText(recognizedString);
+
+                    if (!string.IsNullOrEmpty(translatedString))
+                    {
+                        speechToTextController.outputText.text +=
+                            "\n\ntranslated :\n" + translatedString;
+                    }
+                }
+            }
+        }
+
     }
+
+    /*
+    [PunRPC]
+    private void OnReceiveAllTranslations(string originalText, string translationsJson)
+    {
+        Debug.Log($"[OnReceiveAllTranslations] original={originalText}");
+        Debug.Log($"[OnReceiveAllTranslations] translationsJson={translationsJson}");
+
+        // 여기서는 단순히 로그만 찍는 예시.
+        // 실제로는 JSON -> Dictionary<string, string> 역직렬화해서,
+        // Player.CustomProperties["LanguageCode"] 에 맞춰 특정 번역문만 UI 표시 가능.
+    }
+    */
 
     public event TranslationRecognizerDelegate OnToggleTranslator;
 }

@@ -9,8 +9,8 @@ namespace MRTK.Tutorials.MultiUserCapabilities
         public static PhotonRoomConferenceAR Room;
 
         [SerializeField] private GameObject photonUserPrefab = default;
-        [SerializeField] private GameObject roverExplorerPrefab = default;
-        [SerializeField] private Transform roverExplorerLocation = default;
+        //[SerializeField] private GameObject roverExplorerPrefab = default;
+        //[SerializeField] private Transform roverExplorerLocation = default;
 
         // private PhotonView pv;
         private Player[] photonPlayers;
@@ -63,8 +63,6 @@ namespace MRTK.Tutorials.MultiUserCapabilities
             if (PhotonNetwork.PrefabPool is DefaultPool pool)
             {
                 if (photonUserPrefab != null) pool.ResourceCache.Add(photonUserPrefab.name, photonUserPrefab);
-
-                if (roverExplorerPrefab != null) pool.ResourceCache.Add(roverExplorerPrefab.name, roverExplorerPrefab);
             }
         }
 
@@ -86,7 +84,7 @@ namespace MRTK.Tutorials.MultiUserCapabilities
 
             if (!PhotonNetwork.IsMasterClient) return;
 
-            if (TableAnchor.Instance != null) CreateInteractableObjects();
+            //if (TableAnchor.Instance != null) CreateInteractableObjects();
         }
 
         private void CreatPlayer()
@@ -94,7 +92,7 @@ namespace MRTK.Tutorials.MultiUserCapabilities
             var player = PhotonNetwork.Instantiate(photonUserPrefab.name, Vector3.zero, Quaternion.identity);
         }
 
-        private void CreateInteractableObjects()
+       /* private void CreateInteractableObjects()
         {
             var position = roverExplorerLocation.position;
             var positionOnTopOfSurface = new Vector3(position.x, position.y + roverExplorerLocation.localScale.y / 2,
@@ -102,7 +100,7 @@ namespace MRTK.Tutorials.MultiUserCapabilities
 
             var go = PhotonNetwork.Instantiate(roverExplorerPrefab.name, positionOnTopOfSurface,
                 roverExplorerLocation.rotation);
-        }
+        }*/
 
         // private void CreateMainLunarModule()
         // {
