@@ -1,12 +1,32 @@
+using System;
+using System.Net;
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using System.Threading.Tasks;
 
+// 내부 구현은 (코루틴 등으로) 바뀔 수 있으나, 큰 함수 구조는 바뀌지 않을 듯 합니다.
+//
+// Usage:
+// bool isPINDuplicate(string PIN) -> 중복된 PIN이 있는지 확인
+// bool registerProfile(UserData userData) -> UserData 등록 시도 (중복 시 web에서 error 뱉음)
+// bool editProfile(string PIN, UserData userData) -> PIN으로 findUser에서 ID 찾은 후, userData 수정 시도
+// int findUser(string PIN) -> PIN으로 DB의 userID 반환 (0: 없음, -1: Error)
+// UserData getUserData(string PIN) -> PIN으로 UserData 받아옴
+
 public class DatabaseManager : MonoBehaviour
 {
-    public string pin;
+    // 러시아 - "ru-RU"
+    // 스페인어 - "es-ES"
+    // 독일어 - "de-DE"
+    // 중국어 - "zh-HK"
+    // 한국어 - "ko-KR"
+    // 영어 - "en-US"
+    // 일본어 - "ja-JP"
+    
+    public string user_pin;
     public string name_str;
     public string job;
     public string language;
@@ -26,8 +46,9 @@ public class DatabaseManager : MonoBehaviour
     public bool autoaccept;
     
     public static DatabaseManager Instance { get; private set;}
-    private string address;
-    private Dictionary<string, string> userData;
+    [SerializeField] private string address; // REST API IP Address
+    [SerializeField] private string port; // REST API Port
+    // private Dictionary<string, string> userData;
     
     // Start is called before the first frame update
     void Start()
@@ -43,31 +64,63 @@ public class DatabaseManager : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    public bool isPINDuplicate(string PIN) // PIN이 있는지 확인
     {
+        string apiUrl = $"http://{address}:{port}/users/search?PIN={PIN}";
+        int response;
         
+        try
+        {
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(apiUrl);
+            request.Method = "GET";
+
+            using (HttpWebResponse httpResponse = (HttpWebResponse)request.GetResponse())
+            {
+                using (StreamReader reader = new StreamReader(httpResponse.GetResponseStream()))
+                {
+                    string result = reader.ReadToEnd();
+                    if (int.TryParse(result, out int parsedResponse))
+                    {
+                        response = parsedResponse;
+                    }
+                    else
+                    {
+                        Debug.LogError("Invalid response format.");
+                        response = -1;
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Error: {ex.Message}");
+            response = -1;
+        }
+
+        if(response == -1) // 0: 없음, -1: 오류, 나머지: userid
+        {
+            throw new Exception("PIN Error!");
+        }
+        
+        if(response == 0)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
     }
 
-    public bool ConnectDB()
-    {
-        return false;
-    }
-
-    public bool isPINDuplicate()
-    {
-        return false;
-    }
-
-    public bool RegisterProfile(UserData userdata)
+    public bool registerProfile(UserData userdata)
     {
         // 요청 URL
-        string apiUrl = "http://127.0.0.1:8000/users/";
+        string apiUrl = $"http://{address}:{port}/users/";
 
         // UserData 객체 생성 및 데이터 초기화
         UserData userData = new UserData
         {
-            pin = pin,
+            pin = user_pin,
             name = name_str,
             job = job,
             language = language,
@@ -124,13 +177,111 @@ public class DatabaseManager : MonoBehaviour
         }
     }
 
-    public bool EditProfile()
+    public bool editProfile(string PIN, UserData userdata)
     {
-        return false;
+        int userID = findUser(PIN);
+        string apiUrl = $"http://{address}:{port}/users/{userID}";
+
+        try
+        {
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(apiUrl);
+            request.Method = "PUT";
+            request.ContentType = "application/json";
+
+            // Serialize userdata to JSON
+            string jsonData = JsonUtility.ToJson(userdata);
+            byte[] dataBytes = System.Text.Encoding.UTF8.GetBytes(jsonData);
+
+            // Write data to request stream
+            using (Stream requestStream = request.GetRequestStream())
+            {
+                requestStream.Write(dataBytes, 0, dataBytes.Length);
+            }
+
+            using (HttpWebResponse httpResponse = (HttpWebResponse)request.GetResponse())
+            {
+                using (StreamReader reader = new StreamReader(httpResponse.GetResponseStream()))
+                {
+                    string result = reader.ReadToEnd();
+                    Debug.Log($"Profile updated successfully: {result}");
+                    return true;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Error updating profile: {ex.Message}");
+            return false;
+        }
     }
 
-    public Dictionary<string, string> FindUser(string PIN)
+    public int findUser(string PIN) // return userID
     {
-        return userData;
+        string apiUrl = $"http://{address}:{port}/users/search?PIN={PIN}";
+        int userID;
+        
+        try
+        {
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(apiUrl);
+            request.Method = "GET";
+
+            using (HttpWebResponse httpResponse = (HttpWebResponse)request.GetResponse())
+            {
+                using (StreamReader reader = new StreamReader(httpResponse.GetResponseStream()))
+                {
+                    string result = reader.ReadToEnd();
+                    if (int.TryParse(result, out int parsedResponse))
+                    {
+                        userID = parsedResponse;
+                    }
+                    else
+                    {
+                        Debug.LogError("Invalid response format.");
+                        userID = -1;
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Error: {ex.Message}");
+            userID = -1;
+        }
+        
+        return userID;
+    }
+
+    public UserData getUserData(string PIN)
+    {
+        int userID = findUser(PIN);
+        string apiUrl = $"http://{address}:{port}/users/{userID}";
+        
+        UserData receivedUserData = null;
+
+        if (userID > 0) // 0, -1이 아님
+        {
+            try
+            {
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(apiUrl);
+                request.Method = "GET";
+                request.ContentType = "application/json";
+
+                using (HttpWebResponse httpResponse = (HttpWebResponse)request.GetResponse())
+                {
+                    using (StreamReader reader = new StreamReader(httpResponse.GetResponseStream()))
+                    {
+                        string jsonResponse = reader.ReadToEnd();
+                        receivedUserData = JsonUtility.FromJson<UserData>(jsonResponse);
+                        Debug.Log($"User data retrieved successfully: {jsonResponse}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Error retrieving user data: {ex.Message}");
+            }
+        }
+        
+        return receivedUserData;
     }
 }

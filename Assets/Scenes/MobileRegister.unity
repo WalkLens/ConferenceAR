@@ -2478,6 +2478,34 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiDocument: {fileID: 351697041}
+  totalPages: 7
+  researchChipString:
+  - "\uAC8C\uC784 \uAE30\uD68D"
+  - "\uC11C\uBE44\uC2A4 \uAE30\uD68D"
+  - "\uCF58\uD150\uCE20 \uAE30\uD68D"
+  - "\uD504\uB85C\uC81D\uD2B8 \uB9E4\uB2C8\uC9D5"
+  - "\uB370\uC774\uD130 \uBD84\uC11D"
+  - "\uB9C8\uCF00\uD305"
+  - "\uC0AC\uC5C5 \uAE30\uD68D"
+  designChipString:
+  - "\uADF8\uB798\uD53D \uB514\uC790\uC778"
+  - "UI/UX \uB514\uC790\uC778"
+  - "\uC601\uC0C1/\uC560\uB2C8\uBA54\uC774\uC158"
+  - "\uAC74\uCD95/\uC870\uACBD"
+  - "\uD328\uC158 \uB514\uC790\uC778"
+  - "\uAC8C\uC784 \uB514\uC790\uC778"
+  - "\uC0B0\uC5C5 \uB514\uC790\uC778"
+  - "\uC21C\uC218 \uC608\uC220"
+  devChipString:
+  - "\uD504\uB860\uD2B8\uC5D4\uB4DC"
+  - "\uBC31\uC5D4\uB4DC/\uC11C\uBC84"
+  - "\uD480\uC2A4\uD0DD"
+  - "\uAC8C\uC784 \uAC1C\uBC1C/\uADF8\uB798\uD53D"
+  - "\uB370\uC774\uD130/AI"
+  - Web 3.0
+  - "\uBE14\uB85D\uCCB4\uC778"
+  - "\uB370\uBE0C\uC635\uC2A4/\uC9C0\uC6D0"
+  - "\uC784\uBCA0\uB514\uB4DC \uC2DC\uC2A4\uD15C"
 --- !u!1 &366030856
 GameObject:
   m_ObjectHideFlags: 0
@@ -7311,10 +7339,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5381d046e70f60c47b6f76a8532ce9ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pin: 12345
-  name_str: "\uC6D0\uC6B1\uD76C"
+  user_pin: 12314
+  name_str: "\uC774\uB984"
   job: "\uD559\uC0DD"
-  language: "\uD55C\uAD6D\uC5B4"
+  language: ko-KR
   introduction_1: "\uD14C"
   introduction_2: "\uC2A4"
   introduction_3: "\uD2B8"
@@ -7329,6 +7357,8 @@ MonoBehaviour:
   url: https://www.google.com/
   photo_url: https://www.naver.com/
   autoaccept: 1
+  address: 127.0.0.1
+  port: 8000
 --- !u!4 &936990465
 Transform:
   m_ObjectHideFlags: 0
