@@ -26,24 +26,8 @@ public class DatabaseManager : MonoBehaviour
     // 영어 - "en-US"
     // 일본어 - "ja-JP"
     
-    public string user_pin;
-    public string name_str;
-    public string job;
-    public string language;
-    public string introduction_1;
-    public string introduction_2;
-    public string introduction_3;
-    public string introduction_4;
-    public string introduction_5;
-    public string interest_1;
-    public string interest_2;
-    public string interest_3;
-    public string interest_4;
-    public string interest_5;
-    public string introduction_text;
-    public string url;
-    public string photo_url;
-    public bool autoaccept;
+    [SerializeField] private UserData userDataTest;
+    public UserData playerUserData;
     
     public static DatabaseManager Instance { get; private set;}
     [SerializeField] private string address; // REST API IP Address
@@ -61,6 +45,18 @@ public class DatabaseManager : MonoBehaviour
         {
             Debug.LogWarning("DatabaseManager already exists. This instance will be destroyed.");
             Destroy(this);
+        }
+    }
+
+    void Update()
+    {
+        if(Input.GetKey(KeyCode.T))
+        {
+            Debug.Log("isPINDuplicate: " + isPINDuplicate("12345").ToString());
+            Debug.Log("registerProfile: " + registerProfile(userDataTest).ToString());
+            Debug.Log("editProfile: " + editProfile(userDataTest.pin, userDataTest));
+            Debug.Log("findUser: " + findUser("12345").ToString());
+            Debug.Log("getUserData: " + getUserData("12345").ToString());
         }
     }
 
@@ -112,33 +108,33 @@ public class DatabaseManager : MonoBehaviour
         }
     }
 
-    public bool registerProfile(UserData userdata)
+    public bool registerProfile(UserData userData)
     {
         // 요청 URL
         string apiUrl = $"http://{address}:{port}/users/";
 
         // UserData 객체 생성 및 데이터 초기화
-        UserData userData = new UserData
-        {
-            pin = user_pin,
-            name = name_str,
-            job = job,
-            language = language,
-            introduction_1 = introduction_1,
-            introduction_2 = introduction_2,
-            introduction_3 = introduction_3,
-            introduction_4 = introduction_4,
-            introduction_5 = introduction_5,
-            interest_1 = interest_1,
-            interest_2 = interest_2,
-            interest_3 = interest_3,
-            interest_4 = interest_4,
-            interest_5 = interest_5,
-            introduction_text = introduction_text,
-            url = url,
-            photo_url = photo_url,
-            autoaccept = autoaccept
-        };
+        // UserData userData = new UserData
+        // {
+        //     pin = user_pin,
+        //     name = name_str,
+        //     job = job,
+        //     language = language,
+        //     introduction_1 = introduction_1,
+        //     introduction_2 = introduction_2,
+        //     introduction_3 = introduction_3,
+        //     introduction_4 = introduction_4,
+        //     introduction_5 = introduction_5,
+        //     interest_1 = interest_1,
+        //     interest_2 = interest_2,
+        //     interest_3 = interest_3,
+        //     interest_4 = interest_4,
+        //     interest_5 = interest_5,
+        //     introduction_text = introduction_text,
+        //     url = url,
+        //     photo_url = photo_url,
+        //     autoaccept = autoaccept
+        // };
 
         // JSON 데이터 생성
         string jsonData = JsonUtility.ToJson(userData);
