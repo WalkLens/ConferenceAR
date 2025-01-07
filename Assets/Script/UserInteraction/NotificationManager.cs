@@ -86,6 +86,7 @@ public class NotificationManager : MonoBehaviour
         //Debug.Log($"selected Idx : {userInfos.selectedUserIdx}");
         //Debug.Log($"Accept User: {processingUserId}");
         //UserMatchingManagerSM.Instance.isUserMatchingSucceed = true;
+        Debug.Log("Accept!");
     }
 
     public void SendDeclineMessage()
@@ -93,6 +94,7 @@ public class NotificationManager : MonoBehaviour
         userInfos.SendMatchRequestToAUser(userInfos.receivedMatchInfo.userWhoSend, UserMatchingManager.Instance.myUserInfo);
         //Debug.Log($"Decline User: {processingUserId}");
         //UserMatchingManagerSM.Instance.isUserMatchingFailed = true;
+        Debug.Log("Decline!");
     }
 
     //public void SendHoldMessage()

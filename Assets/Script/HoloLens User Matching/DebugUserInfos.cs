@@ -108,6 +108,16 @@ public class DebugUserInfos : MonoBehaviour
             // 버튼에 기능 추가
             matchButtons[0].OnClicked.AddListener(() =>
             {
+                if (matchInfo == null)
+                {
+                    matchInfo = new MatchInfo
+                    {
+                        userWhoSend = "",
+                        userWhoReceive = "",
+                        matchRequest = ""
+                    };
+                }
+
                 matchInfo.matchRequest = "Yes";
 
                 // 실제 메서드 실행
@@ -117,6 +127,16 @@ public class DebugUserInfos : MonoBehaviour
             });
             matchButtons[1].OnClicked.AddListener(() =>
             {
+                if (matchInfo == null)
+                {
+                    matchInfo = new MatchInfo
+                    {
+                        userWhoSend = "",
+                        userWhoReceive = "",
+                        matchRequest = ""
+                    };
+                }
+
                 matchInfo.matchRequest = "No";
 
                 // 실제 메서드 실행
