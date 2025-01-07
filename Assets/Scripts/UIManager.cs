@@ -111,7 +111,7 @@ public class UIManager : MonoBehaviour
             photo_url = photo_url,
             autoaccept = autoaccept
         };
-        DatabaseManager.Instance.RegisterProfile(userData);
+        DatabaseManager.Instance.registerProfile(userData);
     }
 
     public UserData getInputData()
