@@ -24,6 +24,7 @@ public class DebugUserInfos : MonoBehaviour
     public MatchInfo matchInfo; // 보낼 Match Info
     public MatchInfo receivedMatchInfo; // 받을 Match Info
     public GameObject matchButtonGameObject;
+    public GameObject newMatchGameObject;
     public PressableButton[] matchButtons;          //============ SM MODI ============//
     public TextMeshProUGUI receivedMatchInfoText;
     public TextMeshProUGUI matchInfoText;
@@ -121,14 +122,14 @@ public class DebugUserInfos : MonoBehaviour
                 }
 
                 // !! 이후에 요청에 대한 응답을 받는 부분이 이 결과를 못 받고 있음... !!
-                matchInfo.matchRequest = "Yes";
-                Debug.Log("버튼에 Yes 기능 더해짐");
+                matchInfo.matchRequest = "Accept";
+                Debug.Log("버튼에 Accept 기능 더해짐");
 
                 // 실제 메서드 실행
                 SendMatchRequestToAUser(receivedMatchInfo.userWhoSend, UserMatchingManager.Instance.myUserInfo);
                 //SendMatchRequestToAUser(UserMatchingManager.Instance.userInfos[selectedUserIdx].photonUserName,
                 //        UserMatchingManager.Instance.myUserInfo);
-                Debug.Log($"Yes 신호를 {receivedMatchInfo.userWhoSend}에게  보냄");
+                //Debug.Log($"Accept 신호를 {receivedMatchInfo.userWhoSend}에게  보냄");
 
                 matchButtonGameObject.SetActive(false);
             });
@@ -144,14 +145,58 @@ public class DebugUserInfos : MonoBehaviour
                     };
                 }
 
-                matchInfo.matchRequest = "No";
-                Debug.Log("버튼에 No 기능 더해짐");
+                matchInfo.matchRequest = "Decline";
+                Debug.Log("버튼에 Decline 기능 더해짐");
 
                 // 실제 메서드 실행
                 SendMatchRequestToAUser(receivedMatchInfo.userWhoSend, UserMatchingManager.Instance.myUserInfo);
+                //Debug.Log($"Decline 신호를 {receivedMatchInfo.userWhoSend}에게  보냄");
 
                 matchButtonGameObject.SetActive(false);
             });
+            matchButtons[2].OnClicked.AddListener(() =>
+            {
+                if (matchInfo == null)
+                {
+                    matchInfo = new MatchInfo
+                    {
+                        userWhoSend = "",
+                        userWhoReceive = "",
+                        matchRequest = ""
+                    };
+                }
+
+                matchInfo.matchRequest = "Decline";
+                Debug.Log("버튼에 Decline 기능 더해짐");
+
+                // 실제 메서드 실행
+                SendMatchRequestToAUser(receivedMatchInfo.userWhoSend, UserMatchingManager.Instance.myUserInfo);
+                //Debug.Log($"Decline 신호를 {receivedMatchInfo.userWhoSend}에게  보냄");
+
+                matchButtonGameObject.SetActive(false);
+            });
+            matchButtons[3].OnClicked.AddListener(() =>
+            {
+                if (matchInfo == null)
+                {
+                    matchInfo = new MatchInfo
+                    {
+                        userWhoSend = "",
+                        userWhoReceive = "",
+                        matchRequest = ""
+                    };
+                }
+
+                matchInfo.matchRequest = "Decline";
+                Debug.Log("버튼에 Decline 기능 더해짐");
+
+                // 실제 메서드 실행
+                SendMatchRequestToAUser(receivedMatchInfo.userWhoSend, UserMatchingManager.Instance.myUserInfo);
+                //Debug.Log($"Decline 신호를 {receivedMatchInfo.userWhoSend}에게  보냄");
+
+                matchButtonGameObject.SetActive(false);
+            });
+
         }
         else
         {
@@ -236,13 +281,15 @@ public class DebugUserInfos : MonoBehaviour
 
     public void DebugMatchText()
     {
+        //Debug.Log("XYZ1");
         receivedMatchInfoText.text = $"• userWhoSend: {receivedMatchInfo.userWhoSend} \n" +
                                      $"• userWhoReceived: {receivedMatchInfo.userWhoReceive} \n" +
                                      $"• matchRequest: {receivedMatchInfo.matchRequest} ";
-
+        //Debug.Log("XYZ2");
         matchInfoText.text = $"• userWhoSend: {matchInfo.userWhoSend} \n" +
                              $"• userWhoReceived: {matchInfo.userWhoReceive} \n" +
                              $"• matchRequest: {matchInfo.matchRequest} ";
+        //Debug.Log("XYZ3");
     }
 
     public void DebugMyUserInfo(UserInfo userInfo)
@@ -295,19 +342,19 @@ public class DebugUserInfos : MonoBehaviour
 
     public void ShowMatchRequestUI()
     {
-        // TODO: 매칭 요청을 받고 그에 해당하는 UI를 띄운다.
         matchButtonGameObject.SetActive(true);        
-
     }
-    public void ShowMatchRequestYesUI()
+    public void ShowNewMatchRequestUI()
     {
-        // TODO: 매칭 응답(Yes)을 받고 그에 해당하는 UI를 띄운다.
-
+        newMatchGameObject.SetActive(true);
     }
-    public void ShowMatchRequestNoUI()
+    public void ShowReceiveAcceptUI()
     {
-        // TODO: 매칭 응답(No)을 받고 그에 해당하는 UI를 띄운다.
-
+        notificationManager.OpenReceiveAcceptPopupUI();
+    }
+    public void ShowReceiveDeclineUI()
+    {
+        notificationManager.OpenReceiveDeclinePopupUI();
     }
     void OnDestroy()
     {

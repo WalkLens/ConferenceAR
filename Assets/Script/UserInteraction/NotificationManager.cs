@@ -27,11 +27,12 @@ public class NotificationManager : MonoBehaviour
     [SerializeField] GameObject newMatchingUI;
     [SerializeField] GameObject profileUI;
     [SerializeField] GameObject timeSetUI;
-    //[SerializeField] GameObject afMatchingUI;
 
     [Header("Pop UP UI")]
-    [SerializeField] GameObject acceptPopupUI;
-    [SerializeField] GameObject declinePopupUI;
+    [SerializeField] GameObject receiveAcceptPopupUI;
+    [SerializeField] GameObject receiveDeclinePopupUI;
+    [SerializeField] GameObject sendAcceptPopupUI;
+    [SerializeField] GameObject sendDeclinePopupUI;
     [SerializeField] GameObject matchingFailPopupUI;
 
     private string processingUserId = "";
@@ -82,31 +83,34 @@ public class NotificationManager : MonoBehaviour
     }
 
     // 매칭 요청 응답 메세지 이벤트 함수 - Y
-    public void SendAcceptMessage()
-    {
-        // 이게 작동될게 아니라
-        userInfos.SendMatchRequestToAUser(UserMatchingManager.Instance.userInfos[userInfos.selectedUserIdx].photonUserName,
-                        UserMatchingManager.Instance.myUserInfo);
-        // 이게 작동돼야할 듯
-        //userInfos.SendMatchRequestToAUser(userInfos.receivedMatchInfo.userWhoSend, UserMatchingManager.Instance.myUserInfo);
-        //Debug.Log("DDDDD");
+    //public void SendAcceptMessage()
+    //{
+    //    // 이게 작동될게 아니라
+    //    //userInfos.SendMatchRequestToAUser(UserMatchingManager.Instance.userInfos[userInfos.selectedUserIdx].photonUserName,
+    //    //                UserMatchingManager.Instance.myUserInfo);
+    //    // 이게 작동돼야할 듯
+    //    userInfos.SendMatchRequestToAUser(userInfos.receivedMatchInfo.userWhoSend, UserMatchingManager.Instance.myUserInfo);
+    //    OpenSendAcceptPopupUI();
+    //    //Debug.Log("DDDDD");
 
-        //Debug.Log($"selected Idx : {userInfos.selectedUserIdx}");
-        //Debug.Log($"Accept User: {processingUserId}");
-        //UserMatchingManagerSM.Instance.isUserMatchingSucceed = true;
-        //Debug.Log("Accept!");
-    }
+    //    //Debug.Log($"selected Idx : {userInfos.selectedUserIdx}");
+    //    //Debug.Log($"Accept User: {processingUserId}");
+    //    //UserMatchingManagerSM.Instance.isUserMatchingSucceed = true;
+    //    //Debug.Log("Accept!");
+    //}
 
     // 매칭 요청 응답 메세지 이벤트 함수 - N
-    public void SendDeclineMessage()
-    {
-        //userInfos.SendMatchRequestToAUser(userInfos.receivedMatchInfo.userWhoSend, UserMatchingManager.Instance.myUserInfo);
-        //Debug.Log("EEEEE");
+    //public void SendDeclineMessage()
+    //{
+    //    userInfos.SendMatchRequestToAUser(userInfos.receivedMatchInfo.userWhoSend, UserMatchingManager.Instance.myUserInfo);
+    //    OpenSendDeclinePopupUI();
+    //    Debug.Log($"난 분명 Decline 응답을 {userInfos.receivedMatchInfo.userWhoSend}한테 보냈다");
+    //    //Debug.Log("EEEEE");
 
-        //Debug.Log($"Decline User: {processingUserId}");
-        //UserMatchingManagerSM.Instance.isUserMatchingFailed = true;
-        //Debug.Log("Decline!");
-    }
+    //    //Debug.Log($"Decline User: {processingUserId}");
+    //    //UserMatchingManagerSM.Instance.isUserMatchingFailed = true;
+    //    //Debug.Log("Decline!");
+    //}
 
     //public void SendHoldMessage()
     //{
@@ -180,52 +184,64 @@ public class NotificationManager : MonoBehaviour
 
 
     //---- PopUps ----//
-    public void OpenAcceptPopupUI()
+    public void OpenReceiveAcceptPopupUI()
     {
-        acceptPopupUI.SetActive(true);
-        StartCoroutine(ActivateAcceptPopupUI());
+        receiveAcceptPopupUI.SetActive(true);
+        StartCoroutine(ActivateReceiveAcceptPopupUI());
     }
-    private IEnumerator ActivateAcceptPopupUI()
+    private IEnumerator ActivateReceiveAcceptPopupUI()
     {
-        acceptPopupUI.SetActive(true);
+        receiveAcceptPopupUI.SetActive(true);
         yield return new WaitForSeconds(3f);
-        acceptPopupUI.SetActive(false);
+        receiveAcceptPopupUI.SetActive(false);
     }
 
-    public void OpenDeclinePopupUI()
+    public void OpenReceiveDeclinePopupUI()
     {
-        declinePopupUI.SetActive(true);
-        StartCoroutine(ActivateDeclinePopupUI());
+        receiveDeclinePopupUI.SetActive(true);
+        StartCoroutine(ActivateReceiveDeclinePopupUI());
     }
-    private IEnumerator ActivateDeclinePopupUI()
+    private IEnumerator ActivateReceiveDeclinePopupUI()
     {
-        declinePopupUI.SetActive(true);
+        receiveDeclinePopupUI.SetActive(true);
         yield return new WaitForSeconds(3f);
-        declinePopupUI.SetActive(false);
+        receiveDeclinePopupUI.SetActive(false);
+    }
+
+    public void OpenSendAcceptPopupUI()
+    {
+        sendAcceptPopupUI.SetActive(true);
+        StartCoroutine(ActivateSendAcceptPopupUI());
+    }
+    private IEnumerator ActivateSendAcceptPopupUI()
+    {
+        sendAcceptPopupUI.SetActive(true);
+        yield return new WaitForSeconds(3f);
+        sendAcceptPopupUI.SetActive(false);
+    }
+
+    public void OpenSendDeclinePopupUI()
+    {
+        sendDeclinePopupUI.SetActive(true);
+        StartCoroutine(ActivateSendDeclinePopupUI());
+    }
+    private IEnumerator ActivateSendDeclinePopupUI()
+    {
+        sendDeclinePopupUI.SetActive(true);
+        yield return new WaitForSeconds(3f);
+        sendDeclinePopupUI.SetActive(false);
     }
 
     // !!! 지울 것 1
-    public void CloseAcceptPopupUI()
-    {
-        acceptPopupUI.SetActive(false);
-    }
-    // !!!! 지울 것 2
-    public void CloseDeclinePopupUI()
-    {
-        declinePopupUI.SetActive(false);
-    }
-
-    //public void OpenAfMatchingUI()
+    //public void CloseAcceptPopupUI()
     //{
-    //    afMatchingUI.SetActive(true);
+    //    receiveAcceptPopupUI.SetActive(false);
     //}
-
-    //public void CloseAfMatchingUI()
+    //// !!!! 지울 것 2
+    //public void CloseDeclinePopupUI()
     //{
-    //    afMatchingUI.SetActive(false);
+    //    receiveDeclinePopupUI.SetActive(false);
     //}
-    //////////////////////////////////////////////
-
 
     //////////////// TIME BUTTON Callbacks ///////////////
     public void MeetTimePlus()
@@ -251,7 +267,6 @@ public class NotificationManager : MonoBehaviour
 
     public void MeetTimeUpdate()
     {
-
         Debug.Log($"time is {time}");
 
         //if (time == 0)

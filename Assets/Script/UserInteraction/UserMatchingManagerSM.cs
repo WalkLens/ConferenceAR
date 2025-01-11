@@ -100,12 +100,12 @@ public class UserMatchingManagerSM : MonoBehaviour
                 {
                     if (uitimer1 < uitimer1limit)
                     {
-                        notificationManager.OpenAcceptPopupUI();
+                        notificationManager.OpenReceiveAcceptPopupUI();
                         uitimer1 += Time.deltaTime;
                     }
                     else    // reset
                     {
-                        notificationManager.CloseAcceptPopupUI();
+                        //notificationManager.CloseAcceptPopupUI();
                         uitimer1 = 0;
                         currentPhase++;
                         leftime = notificationManager.GetTime();
@@ -116,12 +116,12 @@ public class UserMatchingManagerSM : MonoBehaviour
                 {
                     if (uitimer1 < uitimer1limit)
                     {
-                        notificationManager.OpenDeclinePopupUI();
+                        notificationManager.OpenReceiveAcceptPopupUI();
                         uitimer1 += Time.deltaTime;
                     }
                     else    // reset
                     {
-                        notificationManager.CloseDeclinePopupUI();
+                        //notificationManager.CloseDeclinePopupUI();
                         isUserMatchingFailed = false;
                         uitimer1 = 0;
                         currentPhase--;

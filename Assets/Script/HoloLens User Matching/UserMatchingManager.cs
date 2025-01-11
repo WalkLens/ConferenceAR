@@ -17,6 +17,14 @@ public class UserMatchingManager : HostOnlyBehaviour
     public const byte SendUsersInfoEvent = 3; // 모든 유저 정보 전송 이벤트 코드
     public const byte SendMatchInfoEvent = 4; // 매칭 요청 이벤트 코드
 
+    //============ SM ADD ============//
+    public bool isMatchingSucceed = false;
+    public bool isUserMet = false;
+    public bool isUserRibbonSelected = false;
+    public Transform myPosition;
+    public Transform partnerPosition;
+    //============ SM ADD ============//
+
     private void Awake()
     {
         if (Instance == null) Instance = this;
@@ -37,7 +45,7 @@ public class UserMatchingManager : HostOnlyBehaviour
     public void HandleEvent(EventData photonEvent)
     {
         // 메서드 이름 변경
-        //FileLogger.Log($"photon event {photonEvent.Code} received", this);
+        FileLogger.Log($"photon event {photonEvent.Code} received", this);
         if (photonEvent.Code == SendUserInfoEvent)
         {
             try
@@ -130,12 +138,14 @@ public class UserMatchingManager : HostOnlyBehaviour
         {
             try
             {
+                Debug.Log("AAA");
                 // 데이터 무결성 확인
                 if (photonEvent.CustomData == null)
                 {
                     FileLogger.Log("CustomData is null", this);
                     return;
                 }
+                Debug.Log("BBB");
 
                 object[] data = photonEvent.CustomData as object[];
                 if (data == null || data.Length < 1 || !(data[0] is MatchInfo))
@@ -143,6 +153,7 @@ public class UserMatchingManager : HostOnlyBehaviour
                     FileLogger.Log("Invalid CustomData received or missing MatchInfo", this);
                     return;
                 }
+                Debug.Log("CCC");
 
                 // 데이터 처리
                 MatchInfo receivedMatchInfo = (MatchInfo)data[0];
@@ -152,29 +163,46 @@ public class UserMatchingManager : HostOnlyBehaviour
                     FileLogger.Log("debugUserInfo is null", this);
                     return;
                 }
+                Debug.Log("DDD");
 
                 debugUserInfo.receivedMatchInfo = receivedMatchInfo;
-                debugUserInfo.DebugMatchText();
+                //debugUserInfo.DebugMatchText();
 
                 // 요청을 받았을 때, 받은 곳에서 작동
                 Debug.Log($"요청 받음! : {debugUserInfo.receivedMatchInfo.matchRequest}");
-                // 매칭 요청에 대한 처리 - !! 현재 Yes랑 No에 대한 작동이 안됨
+                
+                // 매칭을 보냈을 때 - Send
                 if (debugUserInfo.receivedMatchInfo.matchRequest == "Request...")   // 매칭 요청을 받음
                 {
-                    // Request... 라는 matchRequest를 받았을 때, 나오는 UI에서의 버튼에 
-                    debugUserInfo.SetMatchButtonStatus(true);
-                    debugUserInfo.ShowMatchRequestUI();
+                    Debug.Log("난 분명 Request... 를 받았다");
+                    if (!isMatchingSucceed)      // 매칭이 이루어지지 않았다면
+                    {
+                        // Request... 라는 matchRequest를 받았을 때, 나오는 UI에서의 버튼에 
+                        debugUserInfo.SetMatchButtonStatus(true);
+                        debugUserInfo.ShowMatchRequestUI();
+                    }
+                    else                        // 매칭이 되어있었다면 
+                    {
+                        debugUserInfo.ShowNewMatchRequestUI();
+                    }
+                    
                     //Debug.Log($"matchInfo.whoSend = {receivedMatchInfo.userWhoSend}"); -> Player2라고 제대로 나오고 있음. 근데 답장으로는 여기로 안 가고 있음..
                 }
-                else if (debugUserInfo.receivedMatchInfo.matchRequest == "Yes")     // 매칭 응답(Yes)을 받음
+                // 매칭을 받았을 때 - Receive
+                else if (debugUserInfo.receivedMatchInfo.matchRequest == "Accept")     // 매칭 응답(Yes)을 받음
                 {
-                    debugUserInfo.ShowMatchRequestYesUI();
-                    Debug.Log("보낸 요청에 대해 Yes 응답을 받음!");
+                    debugUserInfo.ShowReceiveAcceptUI();
+                    MatchingStateUpdateAsTrue();
+                    Debug.Log("난 분명 Accept 응답을 받았다");
+                    //notificationManager.SendAcceptMessage();
+                    //Debug.Log("보낸 요청에 대해 Accept 응답을 받음!");
                 }
-                else if (debugUserInfo.receivedMatchInfo.matchRequest == "No")      // 매칭 응답(No)을 받음
+                else if (debugUserInfo.receivedMatchInfo.matchRequest == "Decline")      // 매칭 응답(No)을 받음
                 {
-                    debugUserInfo.ShowMatchRequestNoUI();
-                    Debug.Log("보낸 요청에 대해 No 응답을 받음!");
+                    debugUserInfo.ShowReceiveDeclineUI();
+                    Debug.Log("난 분명 Decline 응답을 받았다");
+                    //notificationManager.SendDeclineMessage();
+                    //Debug.Log("보낸 요청에 대해 Decline 응답을 받음!");
                 }
             }
             catch (Exception ex)
@@ -332,6 +360,11 @@ public class UserMatchingManager : HostOnlyBehaviour
         {
             FileLogger.Log($"Failed to send user info list: {ex.Message}", this);
         }
+    }
+
+    public void MatchingStateUpdateAsTrue()
+    {
+        isMatchingSucceed = true;
     }
 
     #endregion
