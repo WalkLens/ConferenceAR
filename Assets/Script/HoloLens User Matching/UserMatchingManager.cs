@@ -37,7 +37,7 @@ public class UserMatchingManager : HostOnlyBehaviour
     public void HandleEvent(EventData photonEvent)
     {
         // 메서드 이름 변경
-        FileLogger.Log($"photon event {photonEvent.Code} received", this);
+        //FileLogger.Log($"photon event {photonEvent.Code} received", this);
         if (photonEvent.Code == SendUserInfoEvent)
         {
             try
@@ -155,20 +155,26 @@ public class UserMatchingManager : HostOnlyBehaviour
 
                 debugUserInfo.receivedMatchInfo = receivedMatchInfo;
                 debugUserInfo.DebugMatchText();
-                
-                // 매칭 요청에 대한 처리 - Request일 때 작동 확인
+
+                // 요청을 받았을 때, 받은 곳에서 작동
+                Debug.Log($"요청 받음! : {debugUserInfo.receivedMatchInfo.matchRequest}");
+                // 매칭 요청에 대한 처리 - !! 현재 Yes랑 No에 대한 작동이 안됨
                 if (debugUserInfo.receivedMatchInfo.matchRequest == "Request...")   // 매칭 요청을 받음
                 {
+                    // Request... 라는 matchRequest를 받았을 때, 나오는 UI에서의 버튼에 
                     debugUserInfo.SetMatchButtonStatus(true);
-                    debugUserInfo.ShowMatchRequestUI(); 
+                    debugUserInfo.ShowMatchRequestUI();
+                    //Debug.Log($"matchInfo.whoSend = {receivedMatchInfo.userWhoSend}"); -> Player2라고 제대로 나오고 있음. 근데 답장으로는 여기로 안 가고 있음..
                 }
                 else if (debugUserInfo.receivedMatchInfo.matchRequest == "Yes")     // 매칭 응답(Yes)을 받음
                 {
                     debugUserInfo.ShowMatchRequestYesUI();
+                    Debug.Log("보낸 요청에 대해 Yes 응답을 받음!");
                 }
                 else if (debugUserInfo.receivedMatchInfo.matchRequest == "No")      // 매칭 응답(No)을 받음
                 {
                     debugUserInfo.ShowMatchRequestNoUI();
+                    Debug.Log("보낸 요청에 대해 No 응답을 받음!");
                 }
             }
             catch (Exception ex)

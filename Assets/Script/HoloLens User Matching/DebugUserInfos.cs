@@ -74,10 +74,12 @@ public class DebugUserInfos : MonoBehaviour
                 .AddListener(() =>
                 {
                     //==== SM MODI ====//
+                    // 보내려는 사용자를 클릭할 시, matchRequest에 Request... 이라는 데이터를 채움
                     matchInfo.matchRequest = "Request...";
                     // 버튼을 누르면 바로 데이터 보내는 것이 아닌, 프로필 확인으로 변경
                     //SendMatchRequestToAUser(UserMatchingManager.Instance.userInfos[index].photonUserName,
                     //    UserMatchingManager.Instance.myUserInfo);
+                    // 대신 이 작동을 새로운 버튼을 눌렀을 때, NotificationManager.cs의 SendRequestMessage()에 넣음
                     selectedUserIdx = index;
                     Debug.Log(selectedUserIdx);
                     //==== SM MODI ====//
@@ -90,6 +92,7 @@ public class DebugUserInfos : MonoBehaviour
         }
     }
 
+    // 상대방에게 매칭을 요청할 때, 요청을 보내는 곳에서의 버튼에서 작동하는 함수
     public void SetMatchButtonStatus(bool status)
     {
         if (status)
@@ -104,7 +107,6 @@ public class DebugUserInfos : MonoBehaviour
             };
             DebugMatchText();
 
-
             // 버튼에 기능 추가
             matchButtons[0].OnClicked.AddListener(() =>
             {
@@ -118,10 +120,15 @@ public class DebugUserInfos : MonoBehaviour
                     };
                 }
 
+                // !! 이후에 요청에 대한 응답을 받는 부분이 이 결과를 못 받고 있음... !!
                 matchInfo.matchRequest = "Yes";
+                Debug.Log("버튼에 Yes 기능 더해짐");
 
                 // 실제 메서드 실행
                 SendMatchRequestToAUser(receivedMatchInfo.userWhoSend, UserMatchingManager.Instance.myUserInfo);
+                //SendMatchRequestToAUser(UserMatchingManager.Instance.userInfos[selectedUserIdx].photonUserName,
+                //        UserMatchingManager.Instance.myUserInfo);
+                Debug.Log($"Yes 신호를 {receivedMatchInfo.userWhoSend}에게  보냄");
 
                 matchButtonGameObject.SetActive(false);
             });
@@ -138,6 +145,7 @@ public class DebugUserInfos : MonoBehaviour
                 }
 
                 matchInfo.matchRequest = "No";
+                Debug.Log("버튼에 No 기능 더해짐");
 
                 // 실제 메서드 실행
                 SendMatchRequestToAUser(receivedMatchInfo.userWhoSend, UserMatchingManager.Instance.myUserInfo);
@@ -194,6 +202,7 @@ public class DebugUserInfos : MonoBehaviour
 
         try
         {
+            // 실제 Photon에서 데이터를 보내는 부분
             PhotonNetwork.RaiseEvent(SendMatchInfoEvent, data, options, SendOptions.SendReliable);
             FileLogger.Log($"Send Message to {targetUserName}({targetActorNumber})", this);
 

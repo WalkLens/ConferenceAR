@@ -71,6 +71,7 @@ public class NotificationManager : MonoBehaviour
 
     }
 
+    // 매칭 요청 메세지 이벤트 함수
     public void SendRequestMessage()
     {
         userInfos.SendMatchRequestToAUser(UserMatchingManager.Instance.userInfos[userInfos.selectedUserIdx].photonUserName,
@@ -80,21 +81,31 @@ public class NotificationManager : MonoBehaviour
         //UserMatchingManagerSM.Instance.isUserMatchingSucceed = true;
     }
 
+    // 매칭 요청 응답 메세지 이벤트 함수 - Y
     public void SendAcceptMessage()
     {
-        userInfos.SendMatchRequestToAUser(userInfos.receivedMatchInfo.userWhoSend, UserMatchingManager.Instance.myUserInfo);
+        // 이게 작동될게 아니라
+        userInfos.SendMatchRequestToAUser(UserMatchingManager.Instance.userInfos[userInfos.selectedUserIdx].photonUserName,
+                        UserMatchingManager.Instance.myUserInfo);
+        // 이게 작동돼야할 듯
+        //userInfos.SendMatchRequestToAUser(userInfos.receivedMatchInfo.userWhoSend, UserMatchingManager.Instance.myUserInfo);
+        //Debug.Log("DDDDD");
+
         //Debug.Log($"selected Idx : {userInfos.selectedUserIdx}");
         //Debug.Log($"Accept User: {processingUserId}");
         //UserMatchingManagerSM.Instance.isUserMatchingSucceed = true;
-        Debug.Log("Accept!");
+        //Debug.Log("Accept!");
     }
 
+    // 매칭 요청 응답 메세지 이벤트 함수 - N
     public void SendDeclineMessage()
     {
-        userInfos.SendMatchRequestToAUser(userInfos.receivedMatchInfo.userWhoSend, UserMatchingManager.Instance.myUserInfo);
+        //userInfos.SendMatchRequestToAUser(userInfos.receivedMatchInfo.userWhoSend, UserMatchingManager.Instance.myUserInfo);
+        //Debug.Log("EEEEE");
+
         //Debug.Log($"Decline User: {processingUserId}");
         //UserMatchingManagerSM.Instance.isUserMatchingFailed = true;
-        Debug.Log("Decline!");
+        //Debug.Log("Decline!");
     }
 
     //public void SendHoldMessage()
