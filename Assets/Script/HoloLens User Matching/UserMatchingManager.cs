@@ -390,15 +390,44 @@ public class UserMatchingManager : HostOnlyBehaviour
                     //--------------------------
                     // 여기 정확하게 파악 필요
                     //--------------------------
-                    Debug.Log($"myGameObject: {myUserInfo.photonUserName}");
+
+                    // 왜 언제는 User1, 언제는 UserCentralHost가 되는지 확인 필요
+                    //Debug.Log(myUserInfo.photonUserName);
+                    Debug.Log($"myNamePhoton : {myUserInfo.photonUserName} || partnerNamePhoton : {partnerUserInfo.photonUserName}");
+
+                    string tempName1 = " ";
+                    if (myUserInfo.photonUserName == "CentralHost")
+                    {
+                        tempName1 = "1";
+                    }
+                    else if (myUserInfo.photonUserName.StartsWith("Player"))
+                    {
+                        tempName1 = myUserInfo.photonUserName.Substring(7);      // "Player_" 뒤에 있는 숫자 부분을 추출
+                    }
+                    Debug.Log($"myGameObject: User{tempName1}");
+                    myGameObject = GameObject.Find($"User{tempName1}");
+                    //Debug.Log($"myGameObject: User{myUserInfo.photonUserName}");
+                    //myGameObject = GameObject.Find($"User{myUserInfo.photonUserName}");
+
+                    string tempName2 = " ";
+                    if (partnerUserInfo.photonUserName == "CentralHost")
+                    {
+                        tempName2 = "1";
+                    }
+                    else if (partnerUserInfo.photonUserName.StartsWith("Player"))
+                    {
+                        tempName2 = partnerUserInfo.photonUserName.Substring(7);      // "Player_" 뒤에 있는 숫자 부분을 추출
+                    }
+                    Debug.Log($"partnerGameObject: User{tempName2}");
+                    partnerGameObject = GameObject.Find($"User{tempName2}");
+                    //Debug.Log($"partnerGameObject: User{partnerUserInfo.photonUserName[partnerUserInfo.photonUserName.Length - 1]}");
+                    //partnerGameObject = GameObject.Find($"User{partnerUserInfo.photonUserName[partnerUserInfo.photonUserName.Length - 1]}");
                     //Debug.Log($"partnerGameObject: {partnerUserInfo.photonUserName}");
-                    Debug.Log($"partnerGameObject: User{partnerUserInfo.photonUserName[partnerUserInfo.photonUserName.Length - 1]}");
+
                     //Debug.Log($"partnerGameObject: {userInfos[debugUserInfo.selectedUserIdx].photonUserName}");
                     //Debug.Log($"이건가 : User{debugUserInfo.selectedUserIdx}");
 
                     //myGameObject = GameObject.Find($"User{debugUserInfo.receivedMatchInfo.userWhoReceive}");
-                    myGameObject = GameObject.Find($"User{myUserInfo.photonUserName}");
-                    partnerGameObject = GameObject.Find($"User{partnerUserInfo.photonUserName[partnerUserInfo.photonUserName.Length - 1]}");
 
                     ShowMeetingUI();
                 }
@@ -408,10 +437,12 @@ public class UserMatchingManager : HostOnlyBehaviour
 
     private void ShowMeetingUI()
     {
-        Debug.Log("매칭 이후 UI 뜰 화면1");
+        //Debug.Log("매칭 이후 UI 뜰 화면1");
+        Debug.Log("길 시각화 시작!");
         Vector3 temp = myGameObject.transform.position - partnerGameObject.transform.position;
         Debug.Log(temp);
-        Debug.Log("매칭 이후 UI 뜰 화면2");
+
+        //Debug.Log("매칭 이후 UI 뜰 화면2");
     }
     //============ SM ADD ============//
 
