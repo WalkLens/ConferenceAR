@@ -5,6 +5,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using ExitGames.Client.Photon;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class UserMatchingManager : HostOnlyBehaviour
 {
@@ -18,11 +19,11 @@ public class UserMatchingManager : HostOnlyBehaviour
     public const byte SendMatchInfoEvent = 4; // 매칭 요청 이벤트 코드
 
     //============ SM ADD ============//
-    public bool isMatchingSucceed = false;
+    public bool _isMatchingSucceed = false;
     public bool isUserMet = false;
     public bool isUserRibbonSelected = false;
-    public Transform myPosition;
-    public Transform partnerPosition;
+    public GameObject myGameObject;
+    public GameObject partnerGameObject;
     //============ SM ADD ============//
 
     private void Awake()
@@ -45,7 +46,7 @@ public class UserMatchingManager : HostOnlyBehaviour
     public void HandleEvent(EventData photonEvent)
     {
         // 메서드 이름 변경
-        FileLogger.Log($"photon event {photonEvent.Code} received", this);
+        //FileLogger.Log($"photon event {photonEvent.Code} received", this);
         if (photonEvent.Code == SendUserInfoEvent)
         {
             try
@@ -138,14 +139,14 @@ public class UserMatchingManager : HostOnlyBehaviour
         {
             try
             {
-                Debug.Log("AAA");
+                //Debug.Log("AAA");
                 // 데이터 무결성 확인
                 if (photonEvent.CustomData == null)
                 {
                     FileLogger.Log("CustomData is null", this);
                     return;
                 }
-                Debug.Log("BBB");
+                //Debug.Log("BBB");
 
                 object[] data = photonEvent.CustomData as object[];
                 if (data == null || data.Length < 1 || !(data[0] is MatchInfo))
@@ -153,7 +154,7 @@ public class UserMatchingManager : HostOnlyBehaviour
                     FileLogger.Log("Invalid CustomData received or missing MatchInfo", this);
                     return;
                 }
-                Debug.Log("CCC");
+                //Debug.Log("CCC");
 
                 // 데이터 처리
                 MatchInfo receivedMatchInfo = (MatchInfo)data[0];
@@ -163,18 +164,18 @@ public class UserMatchingManager : HostOnlyBehaviour
                     FileLogger.Log("debugUserInfo is null", this);
                     return;
                 }
-                Debug.Log("DDD");
+                //Debug.Log("DDD");
 
                 debugUserInfo.receivedMatchInfo = receivedMatchInfo;
                 //debugUserInfo.DebugMatchText();
 
                 // 요청을 받았을 때, 받은 곳에서 작동
-                Debug.Log($"요청 받음! : {debugUserInfo.receivedMatchInfo.matchRequest}");
+                //Debug.Log($"요청 받음! : {debugUserInfo.receivedMatchInfo.matchRequest}");
                 
                 // 매칭을 보냈을 때 - Send
                 if (debugUserInfo.receivedMatchInfo.matchRequest == "Request...")   // 매칭 요청을 받음
                 {
-                    Debug.Log("난 분명 Request... 를 받았다");
+                    //Debug.Log("난 분명 Request... 를 받았다");
                     if (!isMatchingSucceed)      // 매칭이 이루어지지 않았다면
                     {
                         // Request... 라는 matchRequest를 받았을 때, 나오는 UI에서의 버튼에 
@@ -183,6 +184,7 @@ public class UserMatchingManager : HostOnlyBehaviour
                     }
                     else                        // 매칭이 되어있었다면 
                     {
+                        // !! 현재는 반복되는 Request 요청 수신이 안 되고 있음..
                         debugUserInfo.ShowNewMatchRequestUI();
                     }
                     
@@ -193,14 +195,14 @@ public class UserMatchingManager : HostOnlyBehaviour
                 {
                     debugUserInfo.ShowReceiveAcceptUI();
                     MatchingStateUpdateAsTrue();
-                    Debug.Log("난 분명 Accept 응답을 받았다");
+                    //Debug.Log("난 분명 Accept 응답을 받았다");
                     //notificationManager.SendAcceptMessage();
                     //Debug.Log("보낸 요청에 대해 Accept 응답을 받음!");
                 }
                 else if (debugUserInfo.receivedMatchInfo.matchRequest == "Decline")      // 매칭 응답(No)을 받음
                 {
                     debugUserInfo.ShowReceiveDeclineUI();
-                    Debug.Log("난 분명 Decline 응답을 받았다");
+                    //Debug.Log("난 분명 Decline 응답을 받았다");
                     //notificationManager.SendDeclineMessage();
                     //Debug.Log("보낸 요청에 대해 Decline 응답을 받음!");
                 }
@@ -362,10 +364,50 @@ public class UserMatchingManager : HostOnlyBehaviour
         }
     }
 
+
+    //============ SM ADD ============//
     public void MatchingStateUpdateAsTrue()
     {
         isMatchingSucceed = true;
     }
+
+    // 프로퍼티로 추가
+    public bool isMatchingSucceed
+    {
+        get => _isMatchingSucceed;
+        set
+        {
+            if (_isMatchingSucceed != value) // 값이 변경되었는지 확인
+            {
+                _isMatchingSucceed = value;
+
+                // 값이 true로 바뀌었을 때만 UI를 띄우는 로직 실행
+                if (_isMatchingSucceed)
+                {
+                    //--------------------------
+                    // 여기 정확하게 파악 필요
+                    //--------------------------
+                    Debug.Log($"debugUserInfo.receivedMatchInfo.userWhoSend: {debugUserInfo.receivedMatchInfo.userWhoSend}");
+                    Debug.Log($"debugUserInfo.receivedMatchInfo.userWhoReceive: {debugUserInfo.receivedMatchInfo.userWhoReceive}");
+                    //Debug.Log($"이건가 : User{debugUserInfo.selectedUserIdx}");
+
+                    myGameObject = GameObject.Find($"User{debugUserInfo.receivedMatchInfo.userWhoReceive}");
+                    partnerGameObject = GameObject.Find($"User{debugUserInfo.receivedMatchInfo.userWhoSend[debugUserInfo.receivedMatchInfo.userWhoSend.Length - 1]}");
+
+                    ShowMeetingUI();
+                }
+            }
+        }
+    }
+
+    private void ShowMeetingUI()
+    {
+        Debug.Log("매칭 이후 UI 뜰 화면1");
+        Vector3 temp = myGameObject.transform.position - partnerGameObject.transform.position;
+        Debug.Log(temp);
+        Debug.Log("매칭 이후 UI 뜰 화면2");
+    }
+    //============ SM ADD ============//
 
     #endregion
 }
