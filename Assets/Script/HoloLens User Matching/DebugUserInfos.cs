@@ -47,6 +47,8 @@ public class DebugUserInfos : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.D))
             DebugAllUsersInfo();
+        if (Input.GetKeyDown(KeyCode.Q))
+            DebugMyMatchInfo();
     }
 
     #region ButtonSetup
@@ -81,8 +83,10 @@ public class DebugUserInfos : MonoBehaviour
                     //SendMatchRequestToAUser(UserMatchingManager.Instance.userInfos[index].photonUserName,
                     //    UserMatchingManager.Instance.myUserInfo);
                     // 대신 이 작동을 새로운 버튼을 눌렀을 때, NotificationManager.cs의 SendRequestMessage()에 넣음
+                    
                     selectedUserIdx = index;
-                    Debug.Log(selectedUserIdx);
+                    //Debug.Log(selectedUserIdx);
+                    Debug.Log($"선택한 유저의 이름: {UserMatchingManager.Instance.userInfos[selectedUserIdx].photonUserName}");
                     //==== SM MODI ====//
 
                     //==== SM ADD ====//
@@ -123,7 +127,7 @@ public class DebugUserInfos : MonoBehaviour
 
                 // !! 이후에 요청에 대한 응답을 받는 부분이 이 결과를 못 받고 있음... !!
                 matchInfo.matchRequest = "Accept";
-                Debug.Log("버튼에 Accept 기능 더해짐");
+                //Debug.Log("버튼에 Accept 기능 더해짐");
 
                 // 실제 메서드 실행
                 SendMatchRequestToAUser(receivedMatchInfo.userWhoSend, UserMatchingManager.Instance.myUserInfo);
@@ -146,7 +150,7 @@ public class DebugUserInfos : MonoBehaviour
                 }
 
                 matchInfo.matchRequest = "Decline";
-                Debug.Log("버튼에 Decline 기능 더해짐");
+                //Debug.Log("버튼에 Decline 기능 더해짐");
 
                 // 실제 메서드 실행
                 SendMatchRequestToAUser(receivedMatchInfo.userWhoSend, UserMatchingManager.Instance.myUserInfo);
@@ -252,7 +256,7 @@ public class DebugUserInfos : MonoBehaviour
             FileLogger.Log($"Send Message to {targetUserName}({targetActorNumber})", this);
 
             // 전송 후에 match 정보 지움.
-            matchInfo = null;
+            //matchInfo = null;
         }
         catch (Exception ex)
         {
@@ -328,7 +332,27 @@ public class DebugUserInfos : MonoBehaviour
 
         SetButtonTextsFromAllUsersInfo();
     }
-    
+
+    public void DebugMyMatchInfo()
+    {
+        if(receivedMatchInfo.userWhoSend!=null)
+            Debug.Log($"• receivedMatchInfo.userWhoSend: {receivedMatchInfo.userWhoSend}");
+        if (receivedMatchInfo.userWhoReceive != null)
+            Debug.Log($"• receivedMatchInfo.userWhoReceive: {receivedMatchInfo.userWhoReceive}");
+        if (receivedMatchInfo.matchRequest != null)
+            Debug.Log($"• receivedMatchInfo.matchRequest: {receivedMatchInfo.matchRequest}");
+        
+        // 받는 쪽 기준, matchInfo 부터는 안 뜸
+        if(matchInfo == null)
+            matchInfo = new MatchInfo();
+        if (matchInfo.userWhoSend != null)
+            Debug.Log($"• matchInfo.userWhoSend: {matchInfo.userWhoSend}");
+        if (matchInfo.userWhoReceive != null)
+            Debug.Log($"• matchInfo.userWhoReceive: {matchInfo.userWhoReceive}");
+        if (matchInfo.matchRequest != null)
+            Debug.Log($"• matchInfo.matchRequest: {matchInfo.matchRequest} ");
+    }
+
     public void LogAllUsersInfo(ref List<UserInfo> allUsersInfo)
     {
         foreach (UserInfo userInfo in allUsersInfo)

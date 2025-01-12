@@ -267,7 +267,7 @@ public class NotificationManager : MonoBehaviour
 
     public void MeetTimeUpdate()
     {
-        Debug.Log($"time is {time}");
+        //Debug.Log($"time is {time}");
 
         //if (time == 0)
         //{

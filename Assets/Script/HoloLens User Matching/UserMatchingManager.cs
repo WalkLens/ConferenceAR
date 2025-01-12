@@ -11,6 +11,7 @@ public class UserMatchingManager : HostOnlyBehaviour
 {
     public static UserMatchingManager Instance;
     public UserInfo myUserInfo; // 나의 정보
+    public UserInfo partnerUserInfo; // 상대방의 정보
     public List<UserInfo> userInfos = new List<UserInfo>(); // 모든 유저 정보 리스트
     public DebugUserInfos debugUserInfo;
     public const byte RenameEvent = 1; // 유저 이름 변경 이벤트 코드
@@ -179,12 +180,13 @@ public class UserMatchingManager : HostOnlyBehaviour
                     if (!isMatchingSucceed)      // 매칭이 이루어지지 않았다면
                     {
                         // Request... 라는 matchRequest를 받았을 때, 나오는 UI에서의 버튼에 
+                        partnerUserInfo.photonUserName = debugUserInfo.receivedMatchInfo.userWhoSend;
                         debugUserInfo.SetMatchButtonStatus(true);
                         debugUserInfo.ShowMatchRequestUI();
                     }
                     else                        // 매칭이 되어있었다면 
                     {
-                        // !! 현재는 반복되는 Request 요청 수신이 안 되고 있음..
+                        // !! 현재는 반복되는 Request 요청 수신이 안 되고 있음.. !!
                         debugUserInfo.ShowNewMatchRequestUI();
                     }
                     
@@ -193,6 +195,7 @@ public class UserMatchingManager : HostOnlyBehaviour
                 // 매칭을 받았을 때 - Receive
                 else if (debugUserInfo.receivedMatchInfo.matchRequest == "Accept")     // 매칭 응답(Yes)을 받음
                 {
+                    partnerUserInfo.photonUserName = debugUserInfo.receivedMatchInfo.userWhoSend;
                     debugUserInfo.ShowReceiveAcceptUI();
                     MatchingStateUpdateAsTrue();
                     //Debug.Log("난 분명 Accept 응답을 받았다");
@@ -387,12 +390,15 @@ public class UserMatchingManager : HostOnlyBehaviour
                     //--------------------------
                     // 여기 정확하게 파악 필요
                     //--------------------------
-                    Debug.Log($"debugUserInfo.receivedMatchInfo.userWhoSend: {debugUserInfo.receivedMatchInfo.userWhoSend}");
-                    Debug.Log($"debugUserInfo.receivedMatchInfo.userWhoReceive: {debugUserInfo.receivedMatchInfo.userWhoReceive}");
+                    Debug.Log($"myGameObject: {myUserInfo.photonUserName}");
+                    //Debug.Log($"partnerGameObject: {partnerUserInfo.photonUserName}");
+                    Debug.Log($"partnerGameObject: User{partnerUserInfo.photonUserName[partnerUserInfo.photonUserName.Length - 1]}");
+                    //Debug.Log($"partnerGameObject: {userInfos[debugUserInfo.selectedUserIdx].photonUserName}");
                     //Debug.Log($"이건가 : User{debugUserInfo.selectedUserIdx}");
 
-                    myGameObject = GameObject.Find($"User{debugUserInfo.receivedMatchInfo.userWhoReceive}");
-                    partnerGameObject = GameObject.Find($"User{debugUserInfo.receivedMatchInfo.userWhoSend[debugUserInfo.receivedMatchInfo.userWhoSend.Length - 1]}");
+                    //myGameObject = GameObject.Find($"User{debugUserInfo.receivedMatchInfo.userWhoReceive}");
+                    myGameObject = GameObject.Find($"User{myUserInfo.photonUserName}");
+                    partnerGameObject = GameObject.Find($"User{partnerUserInfo.photonUserName[partnerUserInfo.photonUserName.Length - 1]}");
 
                     ShowMeetingUI();
                 }
