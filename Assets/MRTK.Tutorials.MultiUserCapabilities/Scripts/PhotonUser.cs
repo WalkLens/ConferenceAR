@@ -14,6 +14,17 @@ namespace MRTK.Tutorials.MultiUserCapabilities
 
             if (!pv.IsMine) return;
 
+            //------------------ SM ADD ---------------------//
+            if (PhotonNetwork.NickName.StartsWith("CentralHost"))
+            {
+                username = "User1";
+            }
+            else if (PhotonNetwork.NickName.StartsWith("Player"))
+            {
+                username = "User" + PhotonNetwork.NickName.Substring(7);
+            }
+            //------------------ SM ADD ---------------------//
+
             username = "User" + PhotonNetwork.NickName;
             pv.RPC("PunRPC_SetNickName", RpcTarget.AllBuffered, username);
         }
