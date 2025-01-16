@@ -62,14 +62,14 @@ public class UserMatchingManagerSM : MonoBehaviour
         }
     }
 
-    private IEnumerator SendUserFileRoutine()
-    {
-        if (isUserMet)
-        {
-            yield return new WaitForSeconds(20f);
-            isUserFileSended = true;
-        }
-    }
+    //private IEnumerator SendUserFileRoutine()
+    //{
+    //    if (isUserMet)
+    //    {
+    //        yield return new WaitForSeconds(20f);
+    //        isUserFileSended = true;
+    //    }
+    //}
     //////////////////////////////////////////////////////
 
     private void Start()

@@ -6,6 +6,8 @@ using Photon.Realtime;
 using ExitGames.Client.Photon;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Unity.VisualScripting;
+using System.Threading.Tasks;
 
 public class UserMatchingManager : HostOnlyBehaviour
 {
@@ -21,7 +23,10 @@ public class UserMatchingManager : HostOnlyBehaviour
 
     //============ SM ADD ============//
     public bool _isMatchingSucceed = false;
-    public bool isUserMet = false;
+    public bool _isTravelingToMeet = false;
+    public bool _isLoopRunning = false;
+    public event Action OnTravelingToMeet;
+    //public bool isUserMet = false;
     public bool isUserRibbonSelected = false;
     public GameObject myGameObject;
     public GameObject partnerGameObject;
@@ -384,7 +389,7 @@ public class UserMatchingManager : HostOnlyBehaviour
             {
                 _isMatchingSucceed = value;
 
-                // 값이 true로 바뀌었을 때만 UI를 띄우는 로직 실행
+                // 값이 true로 바뀌었을 때만 UI를 띄움
                 if (_isMatchingSucceed)
                 {
                     //--------------------------
@@ -430,6 +435,7 @@ public class UserMatchingManager : HostOnlyBehaviour
                     //myGameObject = GameObject.Find($"User{debugUserInfo.receivedMatchInfo.userWhoReceive}");
 
                     ShowMeetingUI();
+                    isTravelingToMeet = true;
                 }
             }
         }
@@ -439,12 +445,78 @@ public class UserMatchingManager : HostOnlyBehaviour
     {
         //Debug.Log("매칭 이후 UI 뜰 화면1");
         Debug.Log("길 시각화 시작!");
-        Vector3 temp = myGameObject.transform.position - partnerGameObject.transform.position;
+        Vector3 temp = partnerGameObject.transform.position - myGameObject.transform.position;
         Debug.Log(temp);
+        debugUserInfo.ShowRouteUI(temp);        // SM - 임시로 여기에 작성함. 이후에 UI관련 연결 수정해야할 듯
 
         //Debug.Log("매칭 이후 UI 뜰 화면2");
     }
+
+    public bool isTravelingToMeet
+    {
+        get => _isTravelingToMeet;
+        set
+        {
+            if (_isTravelingToMeet != value)      // 값 변경 확인
+            {
+                Debug.Log("값이 바뀜!");
+
+                _isTravelingToMeet = value;
+
+                if (_isTravelingToMeet)          // 만나기 위해 이동 중이 true라면
+                {
+                    OnTravelingToMeet?.Invoke(); // 이벤트 트리거
+                    StartTravelingLoop();        // 반복 작업 시작
+                }
+                else
+                {
+                    StopTravelingLoop();         // 반복 작업 중단
+                }
+            }
+        }
+    }
+
+    private async void StartTravelingLoop()
+    {
+        Debug.Log("길 시각화 시작!");
+        _isLoopRunning = true;
+
+        while (_isTravelingToMeet && _isLoopRunning)
+        {
+            //Debug.Log("이동 중...");
+
+            Vector3 temp = myGameObject.transform.position - partnerGameObject.transform.position;
+            debugUserInfo.UpdateRouteUI(temp, myGameObject.transform.rotation.eulerAngles.y);
+            await Task.Delay(500); // 1초 대기
+
+            // 만남 종료 - 테스트를 위해 0.5m으로 잡음
+            if (temp.magnitude < 0.5)
+            {
+                isTravelingToMeet = false;
+            }
+        }
+    }
+
+    private void StopTravelingLoop()
+    {
+        Debug.Log("길 시각화 종료");
+        _isLoopRunning = false;
+        debugUserInfo.HideRouteUI();
+    }
     //============ SM ADD ============//
+
+
+    //private void UpdateMeetingUI()
+    //{
+    //    Vector3 temp = myGameObject.transform.position - partnerGameObject.transform.position;
+    //    debugUserInfo.UpdateRouteUI(temp);
+    //}
+    //private void HideMeetingUI()
+    //{
+    //    Debug.Log("길 시각화 종료!");
+    //    debugUserInfo.HideRouteUI();        // SM - 임시로 여기에 작성함. 이후에 UI관련 연결 수정해야할 듯
+    //}
+
 
     #endregion
 }

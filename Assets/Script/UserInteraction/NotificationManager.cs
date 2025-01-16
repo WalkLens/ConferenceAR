@@ -4,6 +4,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Xml.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -27,6 +29,9 @@ public class NotificationManager : MonoBehaviour
     [SerializeField] GameObject newMatchingUI;
     [SerializeField] GameObject profileUI;
     [SerializeField] GameObject timeSetUI;
+    [SerializeField] GameObject routeVisualizationUI;
+    [SerializeField] TextMeshProUGUI uiText;
+    [SerializeField] RectTransform arrowRot;
 
     [Header("Pop UP UI")]
     [SerializeField] GameObject receiveAcceptPopupUI;
@@ -180,6 +185,26 @@ public class NotificationManager : MonoBehaviour
     public void CloseTimeSetUI()
     {
         timeSetUI.SetActive(false);
+    }
+
+    public void OpenRouteVisualizationUI(Vector3 direction)
+    {
+        routeVisualizationUI.SetActive(true);
+        //uiText.text = direction.magnitude.ToString() + "m left..";
+        //SetRouteVisualizationUI(direction);
+    }
+    public void CloseRouteVisualizationUI()
+    {
+        routeVisualizationUI.SetActive(false);
+    }
+    public void UpdateRouteVisualizationUI(Vector3 direction, float myRotY)
+    {
+        uiText.text = direction.magnitude.ToString() + " m left..";
+
+        //Debug.Log(direction.x / direction.z);
+        float rotY = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + 180 - myRotY;
+
+        arrowRot.localEulerAngles = new Vector3(60, rotY, 0);
     }
 
 

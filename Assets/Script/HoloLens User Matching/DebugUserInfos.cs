@@ -380,6 +380,19 @@ public class DebugUserInfos : MonoBehaviour
     {
         notificationManager.OpenReceiveDeclinePopupUI();
     }
+    public void ShowRouteUI(Vector3 direction)
+    {
+        notificationManager.OpenRouteVisualizationUI(direction);
+    }
+    public void UpdateRouteUI(Vector3 direction, float myRotY)
+    {
+        notificationManager.UpdateRouteVisualizationUI(direction, myRotY);
+    }
+    public void HideRouteUI()
+    {
+        notificationManager.CloseRouteVisualizationUI();
+    }
+
     void OnDestroy()
     {
         foreach (var userButton in userButtons)
